@@ -7,7 +7,7 @@ local BetaVersion = _G.BetaVersion or false
 local DiscordInvite = _G.DiscordInvite or "discord.gg/NekoHub"
 local CreatorName = _G.CreatorName or "¬_¬ Ɓoƨƨ ιƨ ʙɑck#0001"
 local LoadingImageID = _G.LoadingImageID or "rbxassetid://11236233999" 
-local BackUpLink = "" or _G.BackUpLink
+local BackUpLink = _G.BackUpLink or "https://raw.githubusercontent.com/pascaldercoole1/Open-Source-Scripts/main/Infinity%20Yield%20-%20open%20source"
 
 if BackUpLink == "" or BackUpLink == " " then
    print("Bruh")
