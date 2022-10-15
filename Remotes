@@ -1,0 +1,20 @@
+function UpdateRemote(RemoteName, Value)
+    if game:FindFirstChild("_REMOTES_NEKO_") == nil then
+        local REMOTES = Instance.new("Folder")
+        REMOTES.Name = "_REMOTES_NEKO_"
+        REMOTES.Parent = game
+        UpdateRemote(RemoteName, Value)
+    else
+        if game:FindFirstChild("_REMOTES_NEKO_"):FindFirstChild(RemoteName) == nil then
+            local _NEWREMOTE = Instance.new("StringValue")
+            _NEWREMOTE.Name = RemoteName
+            _NEWREMOTE.Value = Value
+            _NEWREMOTE.Parent = game:FindFirstChild("_REMOTES_NEKO_")
+        else
+            print("Remote Update: "..RemoteName)
+            game:FindFirstChild("_REMOTES_NEKO_"):FindFirstChild(RemoteName).Value = Value
+        end
+    end
+end
+
+UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
