@@ -17,7 +17,7 @@ function UpdateRemote(RemoteName, Value)
     end
 end
 
-UpdateRemote("KillRemote", "cpkasdkv/nqTPflmoyoHcifibkuiwYBo")
+UpdateRemote("KillRemote", "nezgyFtsnsdcscraNpndmbfhlsBqhGGwg/jCqnxqnyNhjm")
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
 UpdateRemote("AngelRemote", "ioRxeoIRhhox/xvayoXeRSw")
