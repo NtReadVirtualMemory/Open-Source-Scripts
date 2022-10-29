@@ -17,10 +17,10 @@ function UpdateRemote(RemoteName, Value)
     end
 end
 
-UpdateRemote("KillRemote", "kxNc/etnlckjkG")
+UpdateRemote("KillRemote", "bnYxsiwtdmkVvew/UncctuoIf")
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
-UpdateRemote("AngelRemote", "uyhIRnktnJinrKSgQpjmwavAzzmkq/ugqtkqi")
-UpdateRemote("FishFarmFinishRemote", "uyhIRnktnJinrKSgQpjmwavAzzmkq/leYdzymrtYXjzzls")
-UpdateRemote("SpiritRemote", "hVRpeujprjixuftPdanjjBtddR/ykqgxgvgOwj")
+UpdateRemote("AngelRemote", "jipGeoSmqzisejyRplpQnuMgnaszvkqf/jwpcs")
+UpdateRemote("FishFarmFinishRemote", "jipGeoSmqzisejyRplpQnuMgnaszvkqf/ybamipYrngJbqjj")
+UpdateRemote("SpiritRemote", "usuHgCdluf/soiskUrkovyuWddtplgqtN")
 UpdateRemote("EventRemote", "WklePmhapvLsoDtyvsqzaAoSmhiuU/pgzttrVxSguzqfonsYnmpHjounsqjnTeefrfykiKbn")
