@@ -25,4 +25,4 @@ UpdateRemote("FishFarmFinishRemote", "jipGeoSmqzisejyRplpQnuMgnaszvkqf/ybamipYrn
 UpdateRemote("SpiritRemote", "usuHgCdluf/soiskUrkovyuWddtplgqtN")
 UpdateRemote("EventRemote", "usuHgCdluf/soiskUrkovyuWddtplgqtN")
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
-
+UpdateRemote("FlowerCollect", "client_request_1")
