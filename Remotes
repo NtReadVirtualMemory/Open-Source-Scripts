@@ -17,12 +17,12 @@ function UpdateRemote(RemoteName, Value)
     end
 end
 
-UpdateRemote("KillRemote", "oajbBragGunuacsoloqddzrPgwzylwkQfftjbc/fniYpjiCvKSi")
+UpdateRemote("KillRemote", "wrczVsLcbkEiv/pMmehgqZQFwIm")
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
-UpdateRemote("AngelRemote", "dKCexlbikjFZbtqweNtkr/ywnzvsmkYvHy")
-UpdateRemote("FishFarmFinishRemote", "dKCexlbikjFZbtqweNtkr/xCAjgmOclhmQlItmKlonzlxsp")
-UpdateRemote("SpiritRemote", "suwujadfupWxmrvljttyenmbfjhgucxxj/otedpbagfqmsbzmqdpuNdMtdcWMikhe")
-UpdateRemote("EventRemote", "suwujadfupWxmrvljttyenmbfjhgucxxj/otedpbagfqmsbzmqdpuNdMtdcWMikhe")
+UpdateRemote("AngelRemote", "sucxnQkwnYeChwmvXxUohmzprfjoEpC/bwaaafpqvmgFhHpjeasXpsebpustsg")
+UpdateRemote("FishFarmFinishRemote", "sucxnQkwnYeChwmvXxUohmzprfjoEpC/bwaaafpqvmgFhHpjeasXpsebpustsg")
+UpdateRemote("SpiritRemote", "Ahlsheojbezr/qvRwzysaogadyQfadRpklcqnopuctlgmgagcgn")
+UpdateRemote("EventRemote", "Ahlsheojbezr/qvRwzysaogadyQfadRpklcqnopuctlgmgagcgn")
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
 UpdateRemote("FlowerCollect", "client_request_1")
