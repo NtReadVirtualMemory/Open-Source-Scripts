@@ -3259,7 +3259,7 @@ AddCommand("dupetools", {"dp"}, "dupes your tools", {"1", 1, {"protect"}}, funct
     local Humanoid = GetHumanoid();
     UnequipTools(Humanoid);
     local Connection = AddConnection(CConnect(GetCharacter().ChildAdded, function(Added)
-        wait(.4);
+        wait(); --       wait(.4);
         if (IsA(Added, "Tool")) then
             Added.Parent = LocalPlayer.Backpack
         end
@@ -3390,6 +3390,7 @@ AddCommand("dupetools2", {"rejoindupe", "dupe2"}, "sometimes a faster dupetools"
     queue_on_teleport(readfile("fates-admin/tooldupe.lua"));
     TeleportService.TeleportToPlaceInstance(TeleportService, game.PlaceId, game.JobId);
 end)
+
 
 
 AddCommand("stopdupe", {}, "stops the dupe", {}, function()
