@@ -2,7 +2,7 @@
 	fates admin - 16/11/2022
 ]]
 
-print("COOL2")
+print("MIES OP")
 
 local game = game
 local GetService = game.GetService
@@ -3438,6 +3438,8 @@ AddCommand("savetools", {"st"}, "saves your tools", {1,3}, function(Caller, Args
     end
     return "tools recovered??"
 end)
+
+
 
 AddCommand("givetools", {}, "gives all of your tools to a player", {3,1,"1"}, function(Caller, Args)
     local Target = GetPlayer(Args[1]);
@@ -8184,6 +8186,154 @@ end)
  --   _G.AntiCheatBypass = true
 --end)
 
+
+AddCommand("broketools", {"st"}, "saves your tools", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle"):Destroy()
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+
+AddCommand("removeToolTexture", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChildWhichIsA("SpecialMesh") or Tools[i]:FindFirstChild("Handle"):FindFirstChildWhichIsA("SpecialMesh") then
+
+            local Mesh = Tools[i]:FindFirstChildWhichIsA("SpecialMesh") or Tools[i]:FindFirstChild("Handle"):FindFirstChildWhichIsA("SpecialMesh") 
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Mesh:Destroy()
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+AddCommand("removeToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle").CanCollide = false
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+AddCommand("EnableToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle").CanCollide = true
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+AddCommand("AddToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle").CanCollide = true
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+AddCommand("AddToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle").Anchored = true
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+
+AddCommand("RemoveToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle").Anchored = false
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
+
+AddCommand("DisableToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
+    local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
+
+    for i = 1,#Tools do
+        if Tools[i]:FindFirstChild("Handle") then
+
+            Tools[i].Parent = game.Players.LocalPlayer.Character
+
+            task.wait()
+    
+            Tools[i]:FindFirstChild("Handle").Anchored = false
+    
+            Tools[i].Parent = game.Players.LocalPlayer.Backpack
+    
+        end
+    end
+end)
 
 -- BOSS COMMANDS END --
 
