@@ -2,6 +2,8 @@
 	fates admin - 16/11/2022
 ]]
 
+print("BOSS IS THE KING")
+
 local game = game
 local GetService = game.GetService
 if (not game.IsLoaded(game)) then
@@ -3410,10 +3412,11 @@ AddCommand("dupetools3", {"rejoindupe", "dupe2"}, "sometimes a faster dupetools"
 
     local Char, Workspace, ReplicatedStorage = GetCharacter(), Services.Workspace, Services.ReplicatedStorage
     for i, v in next, Tools do
-        Root.CFrame = CFrame.new(0, 200000 0);
-        v.Parent = game.Players.LocalPlayer.Character
-        v:FindFirstChild("Handle").Anchored = true
+        Root.CFrame = CFrame.new(0, 20000, 0);
         v.Parent = Char
+        task.wait()
+        v:FindFirstChild("Handle").Anchored = true
+        task.wait()
         v.Parent = Workspace
     end
     writefile("fates-admin/tooldupe.txt", tostring(Amount - 1));
@@ -3457,10 +3460,11 @@ AddCommand("dupetools3", {"rejoindupe", "dupe2"}, "sometimes a faster dupetools"
             wait(.6);
             for i, v in next, GetChildren(LocalPlayer.Backpack) do
                 local Root, Humanoid = GetRoot(), GetHumanoid();
-                Root.CFrame = CFrame.new(0, 200000 0);
-                v.Parent = game.Players.LocalPlayer.Character
-                v:FindFirstChild("Handle").Anchored = true
+                Root.CFrame = CFrame.new(0, 200000, 0);
                 v.Parent = Char
+                task.wait()
+                v:FindFirstChild("Handle").Anchored = true
+                task.wait()
                 v.Parent = Workspace
             end
             writefile("fates-admin/tooldupe.txt", tostring(DupeAmount - 1));
