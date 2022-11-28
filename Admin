@@ -3410,7 +3410,7 @@ AddCommand("dupetools3", {"rejoindupe", "dupe2"}, "sometimes a faster dupetools"
 
     local Char, Workspace, ReplicatedStorage = GetCharacter(), Services.Workspace, Services.ReplicatedStorage
     for i, v in next, Tools do
-        Root.CFrame = CFrame.new(0, 2e5, 0);
+        Root.CFrame = CFrame.new(0, 200000 0);
         v.Parent = game.Players.LocalPlayer.Character
         v:FindFirstChild("Handle").Anchored = true
         v.Parent = Char
@@ -3457,7 +3457,7 @@ AddCommand("dupetools3", {"rejoindupe", "dupe2"}, "sometimes a faster dupetools"
             wait(.6);
             for i, v in next, GetChildren(LocalPlayer.Backpack) do
                 local Root, Humanoid = GetRoot(), GetHumanoid();
-                Root.CFrame = CFrame.new(0, 2e5, 0);
+                Root.CFrame = CFrame.new(0, 200000 0);
                 v.Parent = game.Players.LocalPlayer.Character
                 v:FindFirstChild("Handle").Anchored = true
                 v.Parent = Char
