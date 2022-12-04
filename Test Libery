@@ -1,0 +1,168 @@
+
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local ButtonHolder = Instance.new("Frame")
+local UIListLayout = Instance.new("UIListLayout")
+local UICorner = Instance.new("UICorner")
+local Template_Button = Instance.new("TextButton")
+local UICorner_2 = Instance.new("UICorner")
+local Frames = Instance.new("Folder")
+local Backup = Instance.new("Folder")
+local Template_Text_Spalte_Frame_Button = Instance.new("TextButton")
+local Template_Text_Spalte = Instance.new("TextLabel")
+local Template_Text_Spalte_Frame = Instance.new("Frame")
+local UIListLayout_2 = Instance.new("UIListLayout")
+local Template_Frame = Instance.new("Frame")
+local UIListLayout_3 = Instance.new("UIListLayout")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+MainFrame.Position = UDim2.new(0.210114717, 0, 0.203703716, 0)
+MainFrame.Size = UDim2.new(0, 949, 0, 625)
+
+ButtonHolder.Name = "ButtonHolder"
+ButtonHolder.Parent = MainFrame
+ButtonHolder.BackgroundColor3 = Color3.fromRGB(88, 88, 88)
+ButtonHolder.Position = UDim2.new(-0.00093520782, 0, -0.160872757, 0)
+ButtonHolder.Size = UDim2.new(0, 949, 0, 100)
+
+UIListLayout.Parent = ButtonHolder
+UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 50)
+
+UICorner.Parent = ButtonHolder
+
+Template_Button.Name = "Template_Button"
+Template_Button.Parent = ButtonHolder
+Template_Button.BackgroundColor3 = Color3.fromRGB(74, 255, 146)
+Template_Button.BackgroundTransparency = 1.000
+Template_Button.Position = UDim2.new(0.25500527, 0, 0.13000001, 0)
+Template_Button.Size = UDim2.new(0, 130, 0, 100)
+Template_Button.Visible = false
+Template_Button.Font = Enum.Font.SourceSansBold
+Template_Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Template_Button.TextScaled = true
+Template_Button.TextSize = 14.000
+Template_Button.TextWrapped = true
+
+UICorner_2.Parent = MainFrame
+
+Frames.Name = "Frames"
+Frames.Parent = MainFrame
+
+Backup.Name = "Backup"
+Backup.Parent = ScreenGui
+
+Template_Text_Spalte_Frame_Button.Name = "Template_Text_Spalte_Frame_Button"
+Template_Text_Spalte_Frame_Button.Parent = Backup
+Template_Text_Spalte_Frame_Button.BackgroundColor3 = Color3.fromRGB(74, 255, 146)
+Template_Text_Spalte_Frame_Button.BackgroundTransparency = 1.000
+Template_Text_Spalte_Frame_Button.Size = UDim2.new(0, 201, 0, 55)
+Template_Text_Spalte_Frame_Button.Visible = false
+-- Template_Text_Spalte_Frame_Button.Font = Enum.Font.SourceSansBold
+Template_Text_Spalte_Frame_Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Template_Text_Spalte_Frame_Button.TextScaled = true
+Template_Text_Spalte_Frame_Button.TextSize = 14.000
+Template_Text_Spalte_Frame_Button.TextWrapped = true
+
+Template_Text_Spalte.Name = "Template_Text_Spalte"
+Template_Text_Spalte.Parent = Backup
+Template_Text_Spalte.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Template_Text_Spalte.BackgroundTransparency = 1.000
+Template_Text_Spalte.Size = UDim2.new(0, 200, 0, 65)
+Template_Text_Spalte.Visible = false
+Template_Text_Spalte.Font = Enum.Font.SourceSansBold
+Template_Text_Spalte.Text = "Test1"
+Template_Text_Spalte.TextColor3 = Color3.fromRGB(255, 255, 255)
+Template_Text_Spalte.TextScaled = true
+Template_Text_Spalte.TextSize = 14.000
+Template_Text_Spalte.TextWrapped = true
+
+Template_Text_Spalte_Frame.Name = "Template_Text_Spalte_Frame"
+Template_Text_Spalte_Frame.Parent = Template_Text_Spalte
+Template_Text_Spalte_Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Template_Text_Spalte_Frame.BackgroundTransparency = 1.000
+Template_Text_Spalte_Frame.Position = UDim2.new(-0.005, 0,1.338, 0)
+Template_Text_Spalte_Frame.Size = UDim2.new(0, 201, 0, 503)
+
+UIListLayout_2.Parent = Template_Text_Spalte_Frame
+UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout_2.Padding = UDim.new(0, 3)
+
+Template_Frame.Name = "Template_Frame"
+Template_Frame.Parent = Backup
+Template_Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Template_Frame.BackgroundTransparency = 1.000
+Template_Frame.Size = UDim2.new(0, 949, 0, 625)
+
+UIListLayout_3.Parent = Template_Frame
+UIListLayout_3.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout_3.Padding = UDim.new(0, 50)
+
+function closeAllFrames()
+    local AllFrames = Frames:GetChildren()
+
+    for i = 1,#AllFrames do
+        if AllFrames[i]:IsA("Frame") then
+            AllFrames[i].Visible = false
+        end
+    end
+
+end
+
+function CreateFrame(FrameName)
+    local OpenButton = Template_Button:Clone()
+    local CreatedFrame = Backup:FindFirstChild("Template_Frame"):Clone()
+
+    OpenButton.Parent = ButtonHolder
+    CreatedFrame.Parent = Frames
+
+    OpenButton.Visible = true
+    CreatedFrame.Visible = false
+
+    OpenButton.Name = FrameName.."_openButton"
+    CreatedFrame.Name = FrameName
+
+    OpenButton.MouseButton1Click:connect(function()
+        closeAllFrames()
+        CreatedFrame.Visible = true
+    end)
+
+    return CreatedFrame 
+
+end
+
+function CreateSection(Name, Wo)
+    local S = Template_Text_Spalte:Clone()
+
+    S.Name = Name.."_Section"
+    S.Parent = Wo
+    S.Visible = true
+    S.Text = Name
+
+    return S 
+
+end
+
+function CreateSectionButton(Wo, Text, Call)
+    local TO = Wo:FindFirstChild("Template_Text_Spalte_Frame")
+    local TTSFB = Template_Text_Spalte_Frame_Button:Clone()
+
+    TTSFB.Parent = TO
+
+    TTSFB.Text = Text
+
+    TTSFB.Visible = true
+
+    TTSFB.MouseButton1Click:connect(function()
+        Call()
+    end)
+
+end
