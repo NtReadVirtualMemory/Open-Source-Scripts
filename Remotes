@@ -20,10 +20,9 @@ end
 UpdateRemote("KillRemote", "AChwdnvgmyxqqorZiicbytbqdyUmamnUjnPmfem/xmozxagomcwtqkmLWnmelvdktyjde")
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
-UpdateRemote("AngelRemote", "oqtynGy/usuToZuxfbqDipCfxuwkmeerj")
-UpdateRemote("FishFarmFinishRemote", "oqtynGy/LthesnyasPvdbufzfdeyktC")
+UpdateRemote("AngelRemote", "HrEwz/jpfmwokktzjcfrbskn")
+UpdateRemote("FishFarmFinishRemote", "HrEwz/bibRUzdndohJrKxQnSsBerbqgqidds")
 UpdateRemote("SpiritRemote", "dhwnqprsyraecmqtzhxnyocYc/mmroFeaguAwnieoeA")
 UpdateRemote("EventRemote", "dhwnqprsyraecmqtzhxnyocYc/mmroFeaguAwnieoeA")
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
 UpdateRemote("FlowerCollect", "client_request_1")
-
