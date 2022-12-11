@@ -109,7 +109,7 @@ UIListLayout_3.Padding = UDim.new(0, 50)
 local D = {
 }
 
-D.closeAllFrames = function closeAllFrames()
+function closeAllFrames()
     local AllFrames = Frames:GetChildren()
 
     for i = 1,#AllFrames do
