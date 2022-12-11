@@ -106,7 +106,10 @@ UIListLayout_3.FillDirection = Enum.FillDirection.Horizontal
 UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout_3.Padding = UDim.new(0, 50)
 
-function closeAllFrames()
+local D = {
+}
+
+D.closeAllFrames = function closeAllFrames()
     local AllFrames = Frames:GetChildren()
 
     for i = 1,#AllFrames do
@@ -117,7 +120,7 @@ function closeAllFrames()
 
 end
 
-function CreateFrame(FrameName)
+D.CreateFrame = function CreateFrame(FrameName)
     local OpenButton = Template_Button:Clone()
     local CreatedFrame = Backup:FindFirstChild("Template_Frame"):Clone()
 
@@ -139,7 +142,7 @@ function CreateFrame(FrameName)
 
 end
 
-function CreateSection(Name, Wo)
+D.CreateSection = function CreateSection(Name, Wo)
     local S = Template_Text_Spalte:Clone()
 
     S.Name = Name.."_Section"
@@ -151,7 +154,7 @@ function CreateSection(Name, Wo)
 
 end
 
-function CreateSectionButton(Wo, Text, Call)
+D.CreateSectionButton = function CreateSectionButton(Wo, Text, Call)
     local TO = Wo:FindFirstChild("Template_Text_Spalte_Frame")
     local TTSFB = Template_Text_Spalte_Frame_Button:Clone()
 
@@ -166,3 +169,5 @@ function CreateSectionButton(Wo, Text, Call)
     end)
 
 end
+
+return D
