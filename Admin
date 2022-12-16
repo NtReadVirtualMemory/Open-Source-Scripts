@@ -1,5 +1,5 @@
 --[[
-	fates admin - 16/11/2022
+	fates admin - Modded by Neko#4000 and pascaldercoole1
 ]]
 
 local game = game
@@ -8156,15 +8156,15 @@ end
 -- BOSS COMMANDS --
 
        
-AddCommand("AntiSit", {"antisit", "aisit", "AntiCarSit"}, "Easy Anti Sit", {}, function()
+AddCommand("antisit", {"antisit", "aisit", "AntiCarSit"}, "Easy Anti Sit", {}, function()
     _G.AntiSit = true
 end)
 
-AddCommand("unAntiSit", {"unantisit", "unaisit", "unAntiCarSit"}, "Easy Anti Sit", {}, function()
+AddCommand("unantisit", {"unantisit", "unaisit", "unAntiCarSit"}, "Easy Anti Sit", {}, function()
     _G.AntiSit = false
 end)
 
-AddCommand("AntiFling", {"antifling", "AIFLING", "aifling"}, "Cool!", {}, function()
+AddCommand("antifling", {"antifling", "AIFLING", "aifling"}, "Cool!", {}, function()
     -- // Constants \\ --
 -- [ Services ] --
 local Services = setmetatable({}, {__index = function(Self, Index)
@@ -8250,12 +8250,9 @@ local Services = setmetatable({}, {__index = function(Self, Index)
     end)
 end)
 
---AddCommand("AntiCheatBypass", {"disableanticheat", "anticheatbypass", "acb"}, "Works in many Games!", {}, function()
- --   _G.AntiCheatBypass = true
---end)
 
 
-AddCommand("broketools", {"st"}, "saves your tools", {1,3}, function(Caller, Args)
+AddCommand("broketools", {"broketools"}, "saves your tools", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8274,7 +8271,7 @@ AddCommand("broketools", {"st"}, "saves your tools", {1,3}, function(Caller, Arg
 end)
 
 
-AddCommand("removeToolTexture", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("removetooltexture", {"removetooltexture"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8294,7 +8291,7 @@ AddCommand("removeToolTexture", {"st"}, "gay", {1,3}, function(Caller, Args)
     end
 end)
 
-AddCommand("removeToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("removetoolcancollide", {"removetoolcancollide"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8314,7 +8311,7 @@ AddCommand("removeToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
     end
 end)
 
-AddCommand("EnableToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("enabletoolcancollide", {"toolcancollide"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8334,7 +8331,7 @@ AddCommand("EnableToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
     end
 end)
 
-AddCommand("AddToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("addtoolcancollide", {"toolcollide"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8354,7 +8351,7 @@ AddCommand("AddToolCanCollide", {"st"}, "gay", {1,3}, function(Caller, Args)
     end
 end)
 
-AddCommand("AddToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("addtoolanchored", {"toolanchored"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8375,7 +8372,7 @@ AddCommand("AddToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
 end)
 
 
-AddCommand("RemoveToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("removetoolanchored", {"removeanchored"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8393,7 +8390,7 @@ AddCommand("RemoveToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
     end
 end)
 
-AddCommand("DisableToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
+AddCommand("disabletoolanchored", {"disableanchored"}, "gay", {1,3}, function(Caller, Args)
     local Tools = game.Players.LocalPlayer.Backpack:GetChildren()
 
     for i = 1,#Tools do
@@ -8411,9 +8408,16 @@ AddCommand("DisableToolAnchored", {"st"}, "gay", {1,3}, function(Caller, Args)
     end
 end)
 
--- BOSS COMMANDS END --
+AddCommand("killall", {"killall"}, "gay", {1,3}, function(Caller, Args)
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/DigitalityScripts/roblox-scripts/main/Kill%20All'))()
+end)
+
+AddCommand("bringall", {"bringall"}, "gay", {1,3}, function(Caller, Args)
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/DigitalityScripts/roblox-scripts/main/Bring%20All'))()
+end)
 
 
+-- My COMMANDS END --
 
 
 --END IMPORT [plugin]
@@ -8482,12 +8486,12 @@ do
             Utils.Notify(nil, nil, format("ChatPrediction %s", Callback and "enabled" or "disabled"));
         end)
 
-        Misc.Toggle("Anti Kick", Hooks.AntiKick, function(Callback)
+        Misc.Toggle("anti kick", Hooks.AntiKick, function(Callback)
             Hooks.AntiKick = Callback
             Utils.Notify(nil, nil, format("AntiKick %s", Hooks.AntiKick and "enabled" or "disabled"));
         end)
 
-        Misc.Toggle("Anti Teleport", Hooks.AntiTeleport, function(Callback)
+        Misc.Toggle("anti teleport", Hooks.AntiTeleport, function(Callback)
             Hooks.AntiTeleport = Callback
             Utils.Notify(nil, nil, format("AntiTeleport %s", Hooks.AntiTeleport and "enabled" or "disabled"));
         end)
