@@ -1,13 +1,16 @@
-local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/pascaldercoole1/Open-Source-Scripts/main/Notifi%20-%20Libery"))()
+local Notification = loadstring(game:HttpGet("https://api.irisapp.ca/Scripts/IrisBetterNotifications.lua"))()
+
+getgenv().IrisAd = true
+
 
 Notification.Notify("NekoHub V3", "The Pyramid must be open for instand tp to work", "rbxassetid://11945299576", {
 	    Duration = 4,
-	    
+
 	    TitleSettings = {
 	        TextXAlignment = Enum.TextXAlignment.Center,
 	        Font = Enum.Font.SourceSansSemibold,
 	    },
-	
+
 	    GradientSettings = {
 	        GradientEnabled = false,
 	        SolidColorEnabled = true,
