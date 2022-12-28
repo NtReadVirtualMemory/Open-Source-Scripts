@@ -1,0 +1,125 @@
+--levitheotaku's drawing api btw
+function WTS(part)
+local screen = workspace.CurrentCamera:WorldToViewportPoint(part.Position)
+return Vector2.new(screen.x, screen.y)
+end
+
+function ESPText(part, color)
+local name = Drawing.new("Text")
+name.Text = part.Parent.Name
+name.Color = color
+name.Position = WTS(part)
+name.Size = 20.0
+name.Outline = true
+name.Center = true
+name.Visible = true
+
+game:GetService("RunService").Stepped:connect(function()
+pcall(function()
+local destroyed = not part:IsDescendantOf(workspace)
+if destroyed and name ~= nil then
+name:Remove()
+end
+if part ~= nil then
+name.Position = WTS(part)
+end
+local _, screen = workspace.CurrentCamera:WorldToViewportPoint(part.Position)
+if screen then
+name.Visible = true
+else
+name.Visible = false
+end
+end)
+end)
+end
+for i,v in pairs(game:GetService("Workspace"):GetDescendants()) do
+    if v:IsA("Model") and v.Name:find("ElfCrate") and v.Parent == game:GetService("Workspace") then
+        local newpart = Instance.new("Part")
+        newpart.Parent = v
+        task.spawn(function()
+        while true do
+        task.wait()
+        if not v:FindFirstChild("Box") then
+        newpart.Position = (v:GetPivot().p + Vector3.new(0, -800, 0))
+        elseif v:FindFirstChild("Box") then
+        newpart.Position = v:GetPivot().p
+        end
+        end
+        end)
+        ESPText(newpart, Color3.fromRGB(0,255,0))
+    elseif v:IsA("Model") and v.Name:find("GingerbreadCrate") and v.Parent == game:GetService("Workspace") then
+        local newpart = Instance.new("Part")
+        newpart.Parent = v
+        task.spawn(function()
+        while true do
+        task.wait()
+        if not v:FindFirstChild("Box") then
+        newpart.Position = (v:GetPivot().p + Vector3.new(0, -800, 0))
+        elseif v:FindFirstChild("Box") then
+        newpart.Position = v:GetPivot().p
+        end
+        end
+        end)
+        ESPText(newpart, Color3.fromRGB(0, 0, 255))
+    elseif v:IsA("Model") and v.Name:find("SantaCrate") and v.Parent == game:GetService("Workspace") then
+        local newpart = Instance.new("Part")
+        newpart.Parent = v
+        task.spawn(function()
+        while true do
+        task.wait()
+        if not v:FindFirstChild("Box") then
+        newpart.Position = (v:GetPivot().p + Vector3.new(0, -800, 0))
+        elseif v:FindFirstChild("Box") then
+        newpart.Position = v:GetPivot().p
+        end
+        end
+        end)
+        ESPText(newpart, Color3.fromRGB(255, 0, 0))
+    end
+end
+
+game:GetService("Workspace").ChildAdded:Connect(function(v)
+if v:IsA("Model") and v.Name:find("ElfCrate") and v.Parent == game:GetService("Workspace") then
+        local newpart = Instance.new("Part")
+        newpart.Parent = v
+        task.spawn(function()
+        while true do
+        task.wait()
+        if not v:FindFirstChild("Box") then
+        newpart.Position = (v:GetPivot().p + Vector3.new(0, -800, 0))
+        elseif v:FindFirstChild("Box") then
+        newpart.Position = v:GetPivot().p
+        end
+        end
+        end)
+        ESPText(newpart, Color3.fromRGB(0,255,0))
+    elseif v:IsA("Model") and v.Name:find("GingerbreadCrate") and v.Parent == game:GetService("Workspace") then
+        local newpart = Instance.new("Part")
+        newpart.Parent = v
+        task.spawn(function()
+        while true do
+        task.wait()
+        if not v:FindFirstChild("Box") then
+        newpart.Position = (v:GetPivot().p + Vector3.new(0, -800, 0))
+        elseif v:FindFirstChild("Box") then
+        newpart.Position = v:GetPivot().p
+        end
+        end
+        end)
+        ESPText(newpart, Color3.fromRGB(0, 0, 255))
+    elseif v:IsA("Model") and v.Name:find("SantaCrate") and v.Parent == game:GetService("Workspace") then
+        local newpart = Instance.new("Part")
+        newpart.Parent = v
+        task.spawn(function()
+        while true do
+        task.wait()
+        if not v:FindFirstChild("Box") then
+        newpart.Position = (v:GetPivot().p + Vector3.new(0, -800, 0))
+        elseif v:FindFirstChild("Box") then
+        newpart.Position = v:GetPivot().p
+        end
+        end
+        end)
+        ESPText(newpart, Color3.fromRGB(255, 0, 0))
+end
+end)
