@@ -34,3 +34,9 @@ game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2376, 1
 task.wait()
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5085, 530, 733)
 task.wait()
+for i = 1,2 do
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(650, 119, 2244)
+task.wait()
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(616, 196, 2181)
+task.wait()
+end
