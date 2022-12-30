@@ -3,7 +3,7 @@ local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/
 getgenv().IrisAd = true
 
 
-Notification.Notify("NekoHub V3", "Warning you are not in a Car!", "rbxassetid://11945299576", {
+Notification.Notify("NekoHub V3", "WARNING: you are not in a Car!", "rbxassetid://11945299576", {
 	    Duration = 4,
 
 	    TitleSettings = {
