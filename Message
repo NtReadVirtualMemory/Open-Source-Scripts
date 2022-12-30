@@ -1,0 +1,20 @@
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/pascaldercoole1/Open-Source-Scripts/main/Notification"))()
+
+getgenv().IrisAd = true
+
+
+Notification.Notify("NekoHub V3", _G.Message or "???", "rbxassetid://11945299576", {
+	    Duration = 4,
+
+	    TitleSettings = {
+	        TextXAlignment = Enum.TextXAlignment.Center,
+	        Font = Enum.Font.SourceSansSemibold,
+	    },
+
+	    GradientSettings = {
+	        GradientEnabled = false,
+	        SolidColorEnabled = true,
+	        SolidColor = Color3.fromRGB(145, 0, 0),
+	        Retract = true
+	    }
+	})
