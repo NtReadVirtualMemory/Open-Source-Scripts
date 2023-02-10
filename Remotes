@@ -26,4 +26,5 @@ UpdateRemote("SpiritRemote", "rMpacepaoRcQrxTrxpbzeccybtxaZEcEa/rGnxrnjieqLgCTes
 UpdateRemote("EventRemote", "dhwnqprsyraecmqtzhxnyocYc/mmroFeaguAwnieoeA")
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
 UpdateRemote("FlowerCollect", "client_request_1")
-
+UpdateRemote("CropHashData", "oruxrKa")
+UpdateRemote("CropHash", "utf8.char(7, 129313, 129315, 7, 10, 7, 10, 7, 10, 122, 89, 118, 73, 111, 104, 102, 86, 100, 122, 66, 89, 119, 116, 106, 121, 66, 117, 112, 113, 112, 111, 122, 102, 100),")
