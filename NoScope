@@ -60,6 +60,7 @@ local Old; Old = hookmetamethod(game, "__namecall", function(Self, ...)
             Args[1].MessageOutput = {}
             Args[1].MessageInfo = {}
         elseif (Self.Name == "RemoteEvent" and Args[2] == "Bullet" and Method == "FireServer") then
+            print("FOund!!!!")
             if (Target and Target.Character and Target.Character.Humanoid and Target.Character.Humanoid.Health ~= 0) then
                 local Hitbox = Target.Character[getgenv().Settings.Hitbox]
 
