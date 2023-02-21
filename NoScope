@@ -1,3 +1,5 @@
+print("VNEW")
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -54,12 +56,7 @@ local Old; Old = hookmetamethod(game, "__namecall", function(Self, ...)
     local Method = getnamecallmethod()
     
     if (not checkcaller() and Method == "FireServer") then
-        if (Self.Name == "0+.") then
-            Args[1].MessageWarning = {}
-            Args[1].MessageError = {}
-            Args[1].MessageOutput = {}
-            Args[1].MessageInfo = {}
-        elseif (Self.Name == "RemoteEvent" and Args[2] == "Bullet" and Method == "FireServer") then
+        if (Self.Name == "RemoteEvent" and Args[1] == "Bullet" and Method == "FireServer") then
             print("FOund!!!!")
             if (Target and Target.Character and Target.Character.Humanoid and Target.Character.Humanoid.Health ~= 0) then
                 local Hitbox = Target.Character[getgenv().Settings.Hitbox]
@@ -76,9 +73,8 @@ local Old; Old = hookmetamethod(game, "__namecall", function(Self, ...)
                 Args[7] = 1
                 Args[8] = Hitbox.Position
 
-                end
-            end
-        end
+               end
+          end
     end
     
     return Old(Self, unpack(Args))
