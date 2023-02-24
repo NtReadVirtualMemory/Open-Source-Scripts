@@ -10,7 +10,8 @@ local Config = {
     NamesColor        = Color3.fromRGB(255,255,255),
     NamesOutlineColor = Color3.fromRGB(0,0,0),
     NamesFont         = 2, -- 0,1,2,3
-    NamesSize         = 13
+    NamesSize         = 13,
+    TeamCheck         = false
 }
 
 function CreateEsp(Player)
@@ -54,6 +55,27 @@ function CreateEsp(Player)
             else
                 Name.Visible = false
             end
+            
+            if Config.TeamCheck then
+                if Player.Team ~= game.Players.LocalPlayer.Team then
+                    
+                    else
+            Box.Visible = false
+            BoxOutline.Visible = false
+            Name.Visible = false
+            HealthBar.Visible = false
+            HealthBarOutline.Visible = false
+            if not Player then
+                Box:Remove()
+                BoxOutline:Remove()
+                Name:Remove()
+                HealthBar:Remove()
+                HealthBarOutline:Remove()
+                Updater:Disconnect()
+            end
+                end
+            end
+            
             if Config.HealthBar then
                 HealthBarOutline.Visible = IsVisible
                 HealthBarOutline.Color = Color3.fromRGB(0,0,0)
