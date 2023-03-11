@@ -1,4 +1,4 @@
-print("HASH V2.1")
+print("HASH V2.2")
 
 function UpdateRemote(RemoteName, Value)
     if game:FindFirstChild("_REMOTES_NEKO_") == nil then
@@ -20,7 +20,6 @@ function UpdateRemote(RemoteName, Value)
 end
 
 
-
 UpdateRemote("KillRemote", "TxdZEuwn/vkmQjnjjx")
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
@@ -33,6 +32,8 @@ UpdateRemote("TOOL_PICKUPHashData", "nWUUmaabqonkvxpOcljamskil")
 _G.TOOL_PICKUPHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 111, 101, 104, 97, 107, 114, 109, 98, 102, 115, 114, 98, 107, 97, 111, 107, 98, 97, 113, 99, 98, 68, 78, 86, 76, 103, 111, 99, 110, 106, 97)
 UpdateRemote("CropPlaceHashData", "nrfmeuWlghp")
 _G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 100, 120, 104, 103, 121, 83, 121)
+UpdateRemote("BlockPlaceHashData", "nrfmeuWlghp")
+_G.BlockPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 100, 120, 104, 103, 121, 83, 121)
 UpdateRemote("FlowerCollect", "client_request_1")
 UpdateRemote("CropHashData", "dgojNmrhftivmsTmnvcTj")
 _G.CropHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 113, 106, 100, 112, 110, 113, 104, 118, 79, 103, 122, 114, 72, 117, 82, 97, 117, 115, 122, 102, 112, 110, 110, 103, 79, 112, 103, 109, 116, 99, 110, 120, 113)
