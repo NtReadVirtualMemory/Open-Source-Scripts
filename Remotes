@@ -20,6 +20,7 @@ function UpdateRemote(RemoteName, Value)
 end
 
 
+
 UpdateRemote("KillRemote", "TxdZEuwn/vkmQjnjjx")
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
@@ -28,6 +29,8 @@ UpdateRemote("FishFarmFinishRemote", "pzkYXjtmgiw/gplioKjdofxpFZhgwucmhheA")
 UpdateRemote("SpiritRemote", "rMpacepaoRcQrxTrxpbzeccybtxaZEcEa/rGnxrnjieqLgCTesNgaijlvrtbiwNauQIwtwI")
 UpdateRemote("EventRemote", "dhwnqprsyraecmqtzhxnyocYc/mmroFeaguAwnieoeA")
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
+UpdateRemote("TOOL_PICKUPHashData", "nWUUmaabqonkvxpOcljamskil")
+_G.TOOL_PICKUPHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 111, 101, 104, 97, 107, 114, 109, 98, 102, 115, 114, 98, 107, 97, 111, 107, 98, 97, 113, 99, 98, 68, 78, 86, 76, 103, 111, 99, 110, 106, 97)
 UpdateRemote("CropPlaceHashData", "nrfmeuWlghp")
 _G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 100, 120, 104, 103, 121, 83, 121)
 UpdateRemote("FlowerCollect", "client_request_1")
