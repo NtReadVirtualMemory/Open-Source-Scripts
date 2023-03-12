@@ -39,3 +39,7 @@ UpdateRemote("CropHashData", "dgojNmrhftivmsTmnvcTj")
 _G.CropHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 113, 106, 100, 112, 110, 113, 104, 118, 79, 103, 122, 114, 72, 117, 82, 97, 117, 115, 122, 102, 112, 110, 110, 103, 79, 112, 103, 109, 116, 99, 110, 120, 113)
 UpdateRemote("TreeHashData", "iMpgrocqyihsmqmiqjlOnVqwgGUQbiy")
 _G.TreeHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 108, 107, 76, 109, 100)
+
+UpdateRemote("BlockHitHashData", "iMpgrocqyihsmqmiqjlOnVqwgGUQbiy")
+_G.BlockHitHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 108, 107, 76, 109, 100)
+
