@@ -20,7 +20,11 @@ function UpdateRemote(RemoteName, Value)
 end
 
 
-UpdateRemote("KillRemote", "TxdZEuwn/vkmQjnjjx")
+UpdateRemote("KillRemote", "tblslqbAjFnrjxhpjkaiwdNwiiygwQo/JetvHuULo")
+UpdateRemote("KillRemoteHashName", "SHlncapejrcnh")
+_G.KillRemoteHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 121, 108, 113, 111, 117, 112, 103, 67, 108, 120, 74, 112, 106, 112, 102, 121, 97, 106, 67, 112, 117, 110, 106, 103, 118, 73, 122, 113)
+
+
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
 UpdateRemote("AngelRemote", "pzkYXjtmgiw/lwijJwwUjclgcdA")
