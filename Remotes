@@ -20,29 +20,29 @@ function UpdateRemote(RemoteName, Value)
 end
 
 
-UpdateRemote("KillRemote", "uhYUiBfbdisjidiTmgAegu/sMeqchBi") -- 1
-UpdateRemote("KillRemoteHashName", "ntgNKKxvuif") -- 1
-_G.KillRemoteHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 113, 119, 105, 104, 111, 115, 113, 104, 98, 78, 69, 100, 99, 121, 97, 105, 107, 104, 99, 114, 90, 112, 117, 88, 114, 106, 105, 102, 102, 114, 99, 99, 110, 115, 102) -- 1
+UpdateRemote("KillRemote", "kthdgIcgPfwv/nPToqMmygjsphogvwyzhxvi") -- 2
+UpdateRemote("KillRemoteHashName", "paxrgofwwlmqeqkhp") -- 2
+_G.KillRemoteHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 105, 84, 101, 77, 119, 119, 116, 109, 114, 71, 100, 101, 84, 104, 74, 104, 115, 107, 103, 102, 105, 110, 98, 104, 104, 100, 102, 98, 99, 105, 101, 120, 102, 110, 114, 107, 117, 86, 121, 122, 101) -- 2
 
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
 UpdateRemote("AngelRemote", "pzkYXjtmgiw/lwijJwwUjclgcdA")
 UpdateRemote("FishFarmFinishRemote", "pzkYXjtmgiw/gplioKjdofxpFZhgwucmhheA")
-UpdateRemote("SpiritRemote", "rMpacepaoRcQrxTrxpbzeccybtxaZEcEa/rGnxrnjieqLgCTesNgaijlvrtbiwNauQIwtwI")
-UpdateRemote("EventRemote", "dhwnqprsyraecmqtzhxnyocYc/mmroFeaguAwnieoeA")
+UpdateRemote("SpiritRemote", "      ")
+
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
-UpdateRemote("TOOL_PICKUPHashData", "nWUUmaabqonkvxpOcljamskil")
-_G.TOOL_PICKUPHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 111, 101, 104, 97, 107, 114, 109, 98, 102, 115, 114, 98, 107, 97, 111, 107, 98, 97, 113, 99, 98, 68, 78, 86, 76, 103, 111, 99, 110, 106, 97)
+UpdateRemote("TOOL_PICKUPHashData", "cmdYJkEibBmxTjopxxhosoakwwmDyxes") -- 2
+_G.TOOL_PICKUPHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 81, 77, 120, 102, 114, 111, 115, 82, 106, 119, 116, 113, 113, 115, 110, 84, 97, 122, 88, 100, 120, 99, 67) -- 2
 
 
-UpdateRemote("CropPlaceHashData", "Heas") -- 1
-_G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 119, 118, 100, 111, 85, 99, 114, 67, 113, 118, 102, 98, 108, 102) -- 1
-UpdateRemote("BlockPlaceHashData", "Heas") -- 1
-_G.BlockPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 119, 118, 100, 111, 85, 99, 114, 67, 113, 118, 102, 98, 108, 102) -- 1
+UpdateRemote("CropPlaceHashData", sxhzboauvkowqpvh) -- 2
+_G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 102, 111, 98, 106, 113, 108, 104, 106, 108, 106, 106, 118, 116, 70, 100, 118, 107, 114, 84, 111, 78, 71, 119, 122, 121, 108, 107) -- 2
+UpdateRemote("BlockPlaceHashData", "sxhzboauvkowqpvh") -- 2
+_G.BlockPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 102, 111, 98, 106, 113, 108, 104, 106, 108, 106, 106, 118, 116, 70, 100, 118, 107, 114, 84, 111, 78, 71, 119, 122, 121, 108, 107) -- 2
 UpdateRemote("FlowerCollect", "client_request_1") -- 1
-UpdateRemote("CropHashData", "owrrgdwoawlTfwuXzjftkDoccqUnf") -- 1
-_G.CropHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 115, 112, 102, 99, 110, 117, 102, 121, 113, 111) -- 1
-UpdateRemote("TreeHashData", "lifttHlLpdqOztulMjncvvlvdwhp") -- 1
-_G.TreeHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 122, 122, 109, 115, 72, 71, 120, 116, 117, 99, 102, 121, 114, 111, 120, 85, 113) -- 1
-UpdateRemote("BlockHitHashData", "lifttHlLpdqOztulMjncvvlvdwhp") -- 1 
-_G.BlockHitHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 122, 122, 109, 115, 72, 71, 120, 116, 117, 99, 102, 121, 114, 111, 120, 85, 113) -- 1
+UpdateRemote("CropHashData", "fgUMXkmliqwwAljHqjkmnzWzbbLIzabmogw") -- 2
+_G.CropHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 107, 108, 105, 98, 109, 118, 101, 112, 99, 122, 103, 81, 102, 120, 108, 68, 101, 115, 70, 79, 80, 100, 114, 108, 105, 69, 105) -- 1
+UpdateRemote("TreeHashData", "vimwthaxavvpzHoxykyiYn") -- 2
+_G.TreeHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 99, 104, 122, 106, 98, 120, 102, 111, 118, 70, 99, 111, 116, 97, 97) -- 2
+UpdateRemote("BlockHitHashData", "vimwthaxavvpzHoxykyiYn") -- 2
+_G.BlockHitHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 99, 104, 122, 106, 98, 120, 102, 111, 118, 70, 99, 111, 116, 97, 97) -- 2
