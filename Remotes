@@ -35,7 +35,7 @@ UpdateRemote("TOOL_PICKUPHashData", "cmdYJkEibBmxTjopxxhosoakwwmDyxes") -- 2
 _G.TOOL_PICKUPHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 81, 77, 120, 102, 114, 111, 115, 82, 106, 119, 116, 113, 113, 115, 110, 84, 97, 122, 88, 100, 120, 99, 67) -- 2
 
 
-UpdateRemote("CropPlaceHashData", sxhzboauvkowqpvh) -- 2
+UpdateRemote("CropPlaceHashData", "sxhzboauvkowqpvh") -- 2
 _G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 102, 111, 98, 106, 113, 108, 104, 106, 108, 106, 106, 118, 116, 70, 100, 118, 107, 114, 84, 111, 78, 71, 119, 122, 121, 108, 107) -- 2
 UpdateRemote("BlockPlaceHashData", "sxhzboauvkowqpvh") -- 2
 _G.BlockPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 102, 111, 98, 106, 113, 108, 104, 106, 108, 106, 106, 118, 116, 70, 100, 118, 107, 114, 84, 111, 78, 71, 119, 122, 121, 108, 107) -- 2
