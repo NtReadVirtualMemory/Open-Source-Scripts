@@ -1,4 +1,4 @@
-print("HASH V2.4")
+print("HASH V2.5")
 
 function UpdateRemote(RemoteName, Value)
     if game:FindFirstChild("_REMOTES_NEKO_") == nil then
@@ -20,10 +20,9 @@ function UpdateRemote(RemoteName, Value)
 end
 
 
-UpdateRemote("KillRemote", "tblslqbAjFnrjxhpjkaiwdNwiiygwQo/JetvHuULo")
-UpdateRemote("KillRemoteHashName", "SHlncapejrcnh")
-_G.KillRemoteHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 121, 108, 113, 111, 117, 112, 103, 67, 108, 120, 74, 112, 106, 112, 102, 121, 97, 106, 67, 112, 117, 110, 106, 103, 118, 73, 122, 113)
-
+UpdateRemote("KillRemote", "uhYUiBfbdisjidiTmgAegu/sMeqchBi") -- 1
+UpdateRemote("KillRemoteHashName", "ntgNKKxvuif") -- 1
+_G.KillRemoteHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 113, 119, 105, 104, 111, 115, 113, 104, 98, 78, 69, 100, 99, 121, 97, 105, 107, 104, 99, 114, 90, 112, 117, 88, 114, 106, 105, 102, 102, 114, 99, 99, 110, 115, 102) -- 1
 
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
@@ -34,16 +33,16 @@ UpdateRemote("EventRemote", "dhwnqprsyraecmqtzhxnyocYc/mmroFeaguAwnieoeA")
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
 UpdateRemote("TOOL_PICKUPHashData", "nWUUmaabqonkvxpOcljamskil")
 _G.TOOL_PICKUPHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 111, 101, 104, 97, 107, 114, 109, 98, 102, 115, 114, 98, 107, 97, 111, 107, 98, 97, 113, 99, 98, 68, 78, 86, 76, 103, 111, 99, 110, 106, 97)
-UpdateRemote("CropPlaceHashData", "nrfmeuWlghp")
-_G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 100, 120, 104, 103, 121, 83, 121)
-UpdateRemote("BlockPlaceHashData", "nrfmeuWlghp")
-_G.BlockPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 100, 120, 104, 103, 121, 83, 121)
-UpdateRemote("FlowerCollect", "client_request_1")
-UpdateRemote("CropHashData", "dgojNmrhftivmsTmnvcTj")
-_G.CropHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 113, 106, 100, 112, 110, 113, 104, 118, 79, 103, 122, 114, 72, 117, 82, 97, 117, 115, 122, 102, 112, 110, 110, 103, 79, 112, 103, 109, 116, 99, 110, 120, 113)
-UpdateRemote("TreeHashData", "iMpgrocqyihsmqmiqjlOnVqwgGUQbiy")
-_G.TreeHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 108, 107, 76, 109, 100)
 
-UpdateRemote("BlockHitHashData", "iMpgrocqyihsmqmiqjlOnVqwgGUQbiy")
-_G.BlockHitHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 108, 107, 76, 109, 100)
 
+UpdateRemote("CropPlaceHashData", "Heas") -- 1
+_G.CropPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 119, 118, 100, 111, 85, 99, 114, 67, 113, 118, 102, 98, 108, 102) -- 1
+UpdateRemote("BlockPlaceHashData", "Heas") -- 1
+_G.BlockPlaceHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 119, 118, 100, 111, 85, 99, 114, 67, 113, 118, 102, 98, 108, 102) -- 1
+UpdateRemote("FlowerCollect", "client_request_1") -- 1
+UpdateRemote("CropHashData", "owrrgdwoawlTfwuXzjftkDoccqUnf") -- 1
+_G.CropHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 115, 112, 102, 99, 110, 117, 102, 121, 113, 111) -- 1
+UpdateRemote("TreeHashData", "lifttHlLpdqOztulMjncvvlvdwhp") -- 1
+_G.TreeHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 122, 122, 109, 115, 72, 71, 120, 116, 117, 99, 102, 121, 114, 111, 120, 85, 113) -- 1
+UpdateRemote("BlockHitHashData", "lifttHlLpdqOztulMjncvvlvdwhp") -- 1 
+_G.BlockHitHash = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 122, 122, 109, 115, 72, 71, 120, 116, 117, 99, 102, 121, 114, 111, 120, 85, 113) -- 1
