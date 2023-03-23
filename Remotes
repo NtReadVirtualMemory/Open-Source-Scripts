@@ -1,4 +1,4 @@
-print("HASH V2.7")
+print("HASH V2.8")
 
 function UpdateRemote(RemoteName, Value)
     if game:FindFirstChild("_REMOTES_NEKO_") == nil then
@@ -28,7 +28,8 @@ UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
 UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
 UpdateRemote("AngelRemote", "pzkYXjtmgiw/lwijJwwUjclgcdA")
 UpdateRemote("FishFarmFinishRemote", "pzkYXjtmgiw/gplioKjdofxpFZhgwucmhheA")
-UpdateRemote("SpiritRemote", "      ")
+UpdateRemote("SpiritRemote", "SebFnrzjwpnxemjbqaW/yCyenwLQez")
+
 
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
 UpdateRemote("TOOL_PICKUPHashData", "cmdYJkEibBmxTjopxxhosoakwwmDyxes") -- 2
