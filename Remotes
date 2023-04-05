@@ -1,4 +1,4 @@
-print("HASH V2.8")
+print("HASH V2.9")
 
 function UpdateRemote(RemoteName, Value)
     if game:FindFirstChild("_REMOTES_NEKO_") == nil then
