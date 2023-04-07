@@ -25,10 +25,11 @@ UpdateRemote("KillRemoteHashName", "paxrgofwwlmqeqkhp") -- 2
 _G.KillRemoteHash = "\7\240\159\164\163\240\159\164\161\7\n\7\n\7\niTeMwwtmrGdeThJhskgfinbhhdfbciexfnrkuVyze"
 
 UpdateRemote("BlockRemote", "CLIENT_BLOCK_HIT_REQUEST")
-UpdateRemote("SendMailRemote", "NINGI(HUINUH(UIN(IH(HUUI")
+UpdateRemote("SendMailRemote", "vCjLmrfn/cysLHyxblooq")
 UpdateRemote("AngelRemote", "pzkYXjtmgiw/lwijJwwUjclgcdA")
 UpdateRemote("FishFarmFinishRemote", "pzkYXjtmgiw/gplioKjdofxpFZhgwucmhheA")
 UpdateRemote("SpiritRemote", "SebFnrzjwpnxemjbqaW/yCyenwLQez")
+
 
 
 UpdateRemote("PetCollect", "CLIENT_PET_ANIMAL")
