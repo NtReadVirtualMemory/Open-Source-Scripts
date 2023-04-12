@@ -4259,6 +4259,9 @@ CMDs[#CMDs + 1] = {NAME = 'audiologger / alogger', DESC = 'Opens Edges audio log
 CMDs[#CMDs + 1] = {NAME = 'serverinfo / info', DESC = 'Gives you info about the server'}
 CMDs[#CMDs + 1] = {NAME = 'jobid', DESC = 'Copies the games JobId to your clipboard'}
 CMDs[#CMDs + 1] = {NAME = 'notifyjobid', DESC = 'Notifies you the games JobId'}
+CMDs[#CMDs + 1] = {NAME = 'cj', DESC = 'Copies the games JobId to your clipboard'}
+CMDs[#CMDs + 1] = {NAME = 'jj', DESC = 'Teleports you to the Jobid (in the place you are)'}
+CMDs[#CMDs + 1] = {NAME = 'jpj', DESC = 'Teleports you to the Jobid (PlaceId, JobId)'}
 CMDs[#CMDs + 1] = {NAME = 'rejoin / rj', DESC = 'Makes you rejoin the game'}
 CMDs[#CMDs + 1] = {NAME = 'autorejoin / autorj', DESC = 'Automatically rejoins the server if you get kicked/disconnected'}
 CMDs[#CMDs + 1] = {NAME = 'serverhop / shop', DESC = 'Teleports you to a different server'}
@@ -6592,6 +6595,41 @@ end)
 addcmd('jobid',{},function(args, speaker)
 	local jobId = 'Roblox.GameLauncher.joinGameInstance('..game.PlaceId..', "'..game.JobId..'")'
 	toClipboard(jobId)
+end)
+
+addcmd('cj',{},function(args, speaker)
+	local jobId = game.JobId
+	toClipboard(jobId)
+end)
+
+
+addcmd('jj',{},function(args, speaker)
+    local placeId = game.PlaceId -- Setze deine PlaceId hier ein
+    local jobId = args[1]
+    
+    local teleportService = game:GetService("TeleportService")
+    
+    local success, result = pcall(teleportService.TeleportToPlaceInstance, teleportService, placeId, jobId)
+    
+    if not success then
+        warn("Fehler beim Teleportieren:", result)
+    end
+    
+end)
+
+
+addcmd('jpj',{},function(args, speaker)
+    local placeId = args[1] -- Setze deine PlaceId hier ein
+    local jobId = args[2]
+    
+    local teleportService = game:GetService("TeleportService")
+    
+    local success, result = pcall(teleportService.TeleportToPlaceInstance, teleportService, placeId, jobId)
+    
+    if not success then
+        warn("Fehler beim Teleportieren:", result)
+    end
+    
 end)
 
 addcmd('notifyjobid',{},function(args, speaker)
