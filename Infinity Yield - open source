@@ -4258,6 +4258,7 @@ CMDs[#CMDs + 1] = {NAME = 'remotespy / rspy', DESC = 'Opens FrostHook Spy'}
 CMDs[#CMDs + 1] = {NAME = 'audiologger / alogger', DESC = 'Opens Edges audio logger'}
 CMDs[#CMDs + 1] = {NAME = 'serverinfo / info', DESC = 'Gives you info about the server'}
 CMDs[#CMDs + 1] = {NAME = 'jobid', DESC = 'Copies the games JobId to your clipboard'}
+CMDs[#CMDs + 1] = {NAME = 'GetJoinScript', DESC = 'Copies the games Join Script to your clipboard'}
 CMDs[#CMDs + 1] = {NAME = 'notifyjobid', DESC = 'Notifies you the games JobId'}
 CMDs[#CMDs + 1] = {NAME = 'cj', DESC = 'Copies the games JobId to your clipboard'}
 CMDs[#CMDs + 1] = {NAME = 'jj [JobId]', DESC = 'Teleports you to the Jobid (in the place you are)'}
@@ -6616,6 +6617,22 @@ addcmd('jj',{},function(args, speaker)
     end
     
 end)
+
+addcmd('jobid',{},function(args, speaker)
+	local CODE = "teleportService.TeleportToPlaceInstance, teleportService, placeId, jobId"
+	local jobId = ''
+	toClipboard(jobId)
+end)
+
+
+addcmd('GetJoinScript',{},function(args, speaker)
+	local CODE = "local teleportService = game:GetService('TeleportService'); local success, result = pcall(teleportService.TeleportToPlaceInstance, teleportService, "..game.PlaceId..", '"..game.JobId.."'); if not success then warn('Error:', result) end"
+	toClipboard(CODE)
+end)
+
+-- GetJoinScript
+
+-- teleportService.TeleportToPlaceInstance, teleportService, placeId, jobId
 
 
 addcmd('jpj',{},function(args, speaker)
