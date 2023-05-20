@@ -1,6 +1,6 @@
 -- FREE
 
-for i = 1, 100 do
+for i = 1, 1000 do
   print("Loading Free Version... Nekohub on Top discord.gg/MbsxuDEzgT")
 end
 
