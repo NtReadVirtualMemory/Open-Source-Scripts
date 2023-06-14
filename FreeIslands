@@ -1,5 +1,5 @@
 -- FREE V3.9
-print("fixed the Fluxus Crash error!")
+print("Fixed the Fluxus Crash error!")
 for i = 1, 25 do
   print("Loading Free Version... Nekohub on Top discord.gg/MbsxuDEzgT")
 end
