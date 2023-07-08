@@ -1,4 +1,4 @@
-print("LO222LLLGAGBROOIBNAGIHNAG")
+print("LO222LLLGAGBROOIBNAGIHNAGGGGGGGG")
 
 print("Thank you for Buying Premium!!!")
 
