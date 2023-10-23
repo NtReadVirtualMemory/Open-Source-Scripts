@@ -2365,3 +2365,5 @@ if configs.supersecretdevtoggle then
         NotSound:Play()
     end)
 end
+
+Simple.Text = "Simple Spy (Remade by BossIsBack)"
