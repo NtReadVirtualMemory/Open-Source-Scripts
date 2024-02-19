@@ -1,5 +1,3 @@
--- FREE 4.5
-print("Fixed the Fluxus Crash error!")
 for i = 1, 50 do
   print("Loading Free Version... Nekohub on Top discord.gg/MbsxuDEzgT")
 end
