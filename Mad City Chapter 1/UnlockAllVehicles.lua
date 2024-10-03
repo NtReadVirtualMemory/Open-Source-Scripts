@@ -12,7 +12,7 @@ local Data = {
     Data = {
       Items = {
         "Camaro", "Helicopter", "Boat", 
-        "Nero", "Fury", "Avenger", "Stingray", 
+        "Nero", "Fury", "Avenger", "Stingray", "Roadster", "Night Rider",
         "Challenger", "Hydro", "Jetski", "Overdrive", "Thunderbird", "Mustang", "Tracer", "GTR", 
         "Cruiser", "Inferno", "Dominator", "Plane", "Buzzard", "Scout", "Falcon",
         "Nighthawk", "Warhawk", "Shelby", "911", "Smart","ATV", "Vapid"
