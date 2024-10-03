@@ -66,7 +66,7 @@ function LoadBypass()
                     end  
                 end
             end 
-            wait(10)       
+            wait(5)       
         end
     end)    
 end
