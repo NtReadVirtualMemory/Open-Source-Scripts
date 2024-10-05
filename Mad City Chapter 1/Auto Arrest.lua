@@ -60,6 +60,11 @@ function Arrest(Player)
 	end
 end
 
+
+for i = 1,100 do
+   print("Made by NtOpenProcess and deni210 (on dc)")
+end
+
 for i,v in pairs(game.Players:GetChildren()) do
 	Arrest(v)
 end
