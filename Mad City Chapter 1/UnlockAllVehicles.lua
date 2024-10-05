@@ -56,21 +56,23 @@ local Data = {
 
 function LoadBypass()
     task.spawn(function()
-        while true do
-            for i,vgetgc in pairs(getgc(true)) do
-                if type(vgetgc) == "function" and getinfo(vgetgc).name == "DataFetch" and getfenv(vgetgc).script == game.Players.LocalPlayer.Character.UI.UI_Main then
-                    for i,v in pairs(getupvalues(vgetgc)) do
-                        if type(v) == "table" then
-                            setupvalue(vgetgc, i, Data)
-                        end
-                    end  
-                end
-            end 
-            wait(5)       
-        end
+        for i,vgetgc in pairs(getgc(true)) do
+            if type(vgetgc) == "function" and getinfo(vgetgc).name == "DataFetch" and getfenv(vgetgc).script == game.Players.LocalPlayer.Character.UI.UI_Main then
+                for i,v in pairs(getupvalues(vgetgc)) do
+                    if type(v) == "table" then
+                        setupvalue(vgetgc, i, Data)
+                    end
+                end  
+            end
+        end 
     end)    
 end
 
 LoadBypass()
+
+game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    wait(10)
+    LoadBypass()
+end)
 
 print("Made by ntopenprocess / 0x108") 
