@@ -5,6 +5,9 @@ repeat wait() until game.Players.LocalPlayer.Character:FindFirstChild("HumanoidR
 
 wait(2)
 
+if _G.AutoRob == true then warn("Auto Rob already loaded.") return nil end
+
+_G.AutoRob = true
 queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/NtReadVirtualMemory/Open-Source-Scripts/refs/heads/main/Mad%20City%20Chapter%201/Auto%20Rob'))()")
 
 function shop()
