@@ -7,10 +7,9 @@ function LoadBypass()
         for i,vgetgc in pairs(getgc(true)) do
               if type(vgetgc) == "function" and getinfo(vgetgc).name == "HoldProgress" then
                   hookfunction(vgetgc, New_HoldProgress)
-              end
-          end 
-        wait(5)       
-    end 
+            end
+        end 
+    end)    
 end
 
 LoadBypass()
