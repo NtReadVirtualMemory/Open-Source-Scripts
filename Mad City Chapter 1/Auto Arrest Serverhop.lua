@@ -15,14 +15,6 @@ for i = 1,100 do
    print("Made by NtOpenProcess and deni210 (on dc)")
 end
 
-game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("SetTeam", "Police")
-
-game:GetService("RunService").RenderStepped:Connect(function()
-    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Handcuffs") then
-	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Handcuffs").Parent = game:GetService("Players").LocalPlayer.Character
-    end
-end)
-
 function shop()
     local a,b = pcall(function()
 
@@ -139,6 +131,16 @@ end
 for i = 1,100 do
    print("Made by NtOpenProcess and deni210 (on dc)")
 end
+
+game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("SetTeam", "Police")
+
+wait(2)
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Handcuffs") then
+	game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Handcuffs").Parent = game:GetService("Players").LocalPlayer.Character
+    end
+end)
 
 for i,v in pairs(game.Players:GetChildren()) do
 	Arrest(v)
