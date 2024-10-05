@@ -8,7 +8,7 @@ wait(2)
 if _G.AutoArrest == true then warn("Auto Arrest already loaded.") return nil end
 
 _G.AutoArrest = true
-queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/NtReadVirtualMemory/Open-Source-Scripts/refs/heads/main/Mad%20City%20Chapter%201/Auto%20Rob'))()")
+queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/NtReadVirtualMemory/Open-Source-Scripts/refs/heads/main/Mad%20City%20Chapter%201/Auto%20Arrest%20Serverhop.lua'))()")
 
 
 for i = 1,100 do
