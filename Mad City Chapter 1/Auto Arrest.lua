@@ -1,4 +1,6 @@
 
+local IS_ARRESTING_ALIVE = true
+
 if game.Players.LocalPlayer.PlayerGui.MainGUI:FindFirstChild("TeleportEffect") then
 	game.Players.LocalPlayer.PlayerGui.MainGUI.TeleportEffect:Destroy()
 end
@@ -61,6 +63,16 @@ function Arrest(Player)
 end
 
 
+game:GetService("ReplicatedStorage").RemoteFunction:InvokeServer("SetTeam", "Police")
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if IS_ARRESTING_ALIVE == true then
+	if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Handcuffs") then
+	   game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Handcuffs").Parent = game:GetService("Players").LocalPlayer.Character
+	end
+    end
+end)
+
 for i = 1,100 do
    print("Made by NtOpenProcess and deni210 (on dc)")
 end
@@ -68,3 +80,5 @@ end
 for i,v in pairs(game.Players:GetChildren()) do
 	Arrest(v)
 end
+
+IS_ARRESTING_ALIVE = false
