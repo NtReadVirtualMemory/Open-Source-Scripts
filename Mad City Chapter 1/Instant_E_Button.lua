@@ -4,17 +4,20 @@ end
 
 function LoadBypass()
     task.spawn(function()
-        while true do
-            for i,vgetgc in pairs(getgc(true)) do
-                  if type(vgetgc) == "function" and getinfo(vgetgc).name == "HoldProgress" then
-                      hookfunction(vgetgc, New_HoldProgress)
-                  end
-              end 
-            wait(5)       
-        end
-    end)    
+        for i,vgetgc in pairs(getgc(true)) do
+              if type(vgetgc) == "function" and getinfo(vgetgc).name == "HoldProgress" then
+                  hookfunction(vgetgc, New_HoldProgress)
+              end
+          end 
+        wait(5)       
+    end 
 end
 
 LoadBypass()
+
+game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    wait(10)
+    LoadBypass()
+end)
 
 print("Made by ntopenprocess / 0x108") 
