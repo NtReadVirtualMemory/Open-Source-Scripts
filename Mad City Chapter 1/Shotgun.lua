@@ -10,7 +10,7 @@ function New_RayCheck()
 end
 
 for i,vgetgc in pairs(getgc(true)) do
-    if type(vgetgc) == "function" and getfenv(vgetgc).script == Shotgun:FindFirstChild("ShotgunScript") then
+    if type(vgetgc) == "function" and getfenv(vgetgc).script.Parent == Shotgun then
         if getinfo(vgetgc).name == "RayCheck" then
             hookfunction(vgetgc, New_RayCheck)
         end 
