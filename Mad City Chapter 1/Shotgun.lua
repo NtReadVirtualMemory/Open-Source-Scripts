@@ -5,6 +5,11 @@ if Shotgun == nil then
     return "Unable to Find a Shotgun."
 end
 
+local ss = Shotgun['ShotgunScript']
+for i=1,3 do
+    ss:Clone().Parent = Shotgun
+end
+
 function New_RayCheck()
     return true
 end
@@ -43,10 +48,5 @@ for i,vgetgc in pairs(getgc(true)) do
         end
     end
 end 
-
-local ss = Shotgun['ShotgunScript']
-for i=1,3 do
-    ss:Clone().Parent = Shotgun
-end
 
 print("Made by ntopenprocess / 0x108") 
