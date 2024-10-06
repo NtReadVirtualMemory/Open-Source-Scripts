@@ -44,5 +44,9 @@ for i,vgetgc in pairs(getgc(true)) do
     end
 end 
 
+local ss = Shotgun['ShotgunScript']
+for i=1,3 do
+    ss:Clone().Parent = Shotgun
+end
 
 print("Made by ntopenprocess / 0x108") 
