@@ -43,3 +43,4 @@ for i,targetFunction in pairs(getgc(true)) do
     end
 end
 print("Made by ntopenprocess / 0x108") 
+print("Thanks to evildragon0000 for the Idea :D")
