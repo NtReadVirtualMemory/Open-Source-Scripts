@@ -1,7 +1,9 @@
 function BypassCooldown(vgetgc)
-    while wait() do
-        setupvalue(vgetgc, 4, 100)
-    end
+    task.spawn(function ()
+        while wait() do
+            setupvalue(vgetgc, 4, 100)
+        end
+    end)
 end
 for i,vgetgc in pairs(getgc(true)) do
     if type(vgetgc) == "function" and getfenv(vgetgc).script == game.Players.LocalPlayer.PlayerScripts.Animate:FindFirstChild("ANI_Fly") then
