@@ -42,3 +42,4 @@ for i,targetFunction in pairs(getgc(true)) do
         end
     end
 end
+print("Made by ntopenprocess / 0x108") 
