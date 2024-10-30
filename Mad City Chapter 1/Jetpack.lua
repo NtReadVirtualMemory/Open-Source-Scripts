@@ -11,4 +11,5 @@ for i,vgetgc in pairs(getgc(true)) do
         end
     end
 end
-print("Jetpack Inf-Fuel Done.")
+print("Made by ntopenprocess / 0x108") 
+print("Thanks to evildragon0000 for the Idea :D")
