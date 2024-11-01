@@ -849,26 +849,15 @@ function Remotes()
 					if type(v) == "function" and getfenv(v).script == game.Players.LocalPlayer.PlayerScripts.TS.flame.controllers.block["block-controller"] then
 
 						for dddi,dddv in pairs(getconstants(v)) do
-							print("hi",dddi, "Real", dddv)
+
 							if tonumber(dddi) == 23 then
-								print("FOUND LEFT HASH!", dddv)
 								BlockLeft = dddv
 							end
 							if tonumber(dddi) == 25 then
-								print("FOUND 1!", dddv)
 								BlockLeft1 = dddv
 							end
 							if tonumber(dddi) == 26 then
-								print("FOUND 2!", dddv)
 								BlockRight = BlockLeft1..dddv
-							end
-						end
-						if table.find(getconstants(v), "Get") then
-							print("Hi, found!!!")
-							for i2,v2 in pairs(getconstants(v)) do
-								BlockLeft = "lFjp" -- tostring(getconstants(v)[23])
-								print("HIII")
-								BlockRight = utf8.char(7, 129315, 129313, 7, 10, 7, 10, 7, 10, 112, 104, 119, 102, 106, 115, 120, 106, 116, 102, 101, 102, 109, 108, 98, 110) --getconstants(v)[25]..getconstants(v)[26]
 							end
 						end
 					end
@@ -10035,11 +10024,3 @@ game.Players.LocalPlayer:Kick("SCRIPT IS BROKE! WE ARE SORRY. Reload the script 
 
 
 	-- end
-
-
-
-
-
-
-
-
