@@ -1522,7 +1522,7 @@ if DeveloperVersion == false then
 	if DidKey == true then
 		Window = Fluent:CreateWindow({
 			Title = "Islands.God "..ScriptVersion.." [FREE!] "..holidayMessage,
-			SubTitle = "by swiftey343 and soldo_io", -- neverloseyoursmile_88
+			SubTitle = "by NtOpenProcess and soldo_io", -- neverloseyoursmile_88
 			TabWidth = 160,
 			Size = UDim2.fromOffset(580, 460),
 			Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
@@ -1546,7 +1546,7 @@ if DeveloperVersion == false then
 
 		Window = Fluent:CreateWindow({
 			Title = "Islands.God "..ScriptVersion.." [Premium!] "..holidayMessage,
-			SubTitle = "by swiftey343 and soldo_io", -- neverloseyoursmile_88
+			SubTitle = "by NtOpenProcess and soldo_io", -- neverloseyoursmile_88
 			TabWidth = 160,
 			Size = UDim2.fromOffset(580, 460),
 			Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
@@ -1568,7 +1568,7 @@ if DeveloperVersion == false then
 else
 	Window = Fluent:CreateWindow({
 		Title = "Islands.God "..ScriptVersion.." [Developer!] "..holidayMessage,
-		SubTitle = "by swiftey343 and soldo_io", -- neverloseyoursmile_88
+		SubTitle = "by NtOpenprocess and soldo_io", -- neverloseyoursmile_88
 		TabWidth = 160,
 		Size = UDim2.fromOffset(580, 460),
 		Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
