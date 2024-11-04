@@ -15,7 +15,7 @@ end
 
 function DecryptObjects(DataTable)
     for RealName, Obj in pairs(DataTable) do
-        Obj.Changed:Connect(function ()
+        Obj.Changed:Connect(function()
             Obj.Name = RealName
         end)
     end
