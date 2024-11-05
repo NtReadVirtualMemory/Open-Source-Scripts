@@ -1,0 +1,3 @@
+weaponEvent:
+1. arg -> Weapon ID or some hash ain't sure yet
+2. arg -> Action (r = RELOAD; F = SHOOT; e = EQUIP)
