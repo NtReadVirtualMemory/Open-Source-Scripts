@@ -1,3 +1,6 @@
 weaponEvent:
 1. arg -> Weapon ID or some hash ain't sure yet
 2. arg -> Action (r = RELOAD; F = SHOOT; e = EQUIP)
+when you shoot there are arg 3 and 4
+3. arg -> tick() or position (idk yet)
+4. arg -> Ammo you have left
