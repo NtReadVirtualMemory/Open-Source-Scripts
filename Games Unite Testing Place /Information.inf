@@ -4,3 +4,6 @@ weaponEvent:
 when you shoot there are arg 3 and 4
 3. arg -> tick() or position (idk yet)
 4. arg -> Ammo you have left
+
+Playermodels:
+its just the UserId of the Players
