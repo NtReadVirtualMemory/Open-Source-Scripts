@@ -345,9 +345,6 @@ else
 	while true do end
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/pascaldercoole1/Islands/main/RemotesV2"))() 
-loadstring(game:HttpGet("https://nekohub.000webhostapp.com/Islands.Remotes.Lua"))()
-
 ]]
 
 
