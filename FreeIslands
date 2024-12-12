@@ -3908,10 +3908,6 @@ end
 
 	local GOTACROPTAGET = false
 
-	local DataFromReplaceTable = loadstring(game:HttpGet(('https://raw.githubusercontent.com/pascaldercoole1/Testing-Shit/main/OBFUSECATOR-SHIT-TEST')))()
-
-
-
 	local function SichleCropFarm(SOLLICHAUCHTELEPORTENODERNICHT)
 		DebugCheck(0,"SichleCropFarm")
 		if SICHLECROPFARMCOOLDOWN == false then
