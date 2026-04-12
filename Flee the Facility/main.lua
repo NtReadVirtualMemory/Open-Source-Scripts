@@ -9,6 +9,8 @@ local Lighting = game:GetService("Lighting")
 local VirtualUser = game:GetService("VirtualUser")
 local CollectionService = game:GetService("CollectionService")
 
+local RemoteEvent = game:GetService("ReplicatedStorage").RemoteEvent
+
 local Theme = {
     Background = Color3.fromRGB(18, 18, 22),
     Sidebar = Color3.fromRGB(24, 24, 29),
@@ -237,7 +239,7 @@ function Nova.CreateWindow(opts)
                 if opts.Callback then pcall(opts.Callback) end
             end)
 
-            return Btn
+            return Btn, opts
         end
 
         function Tab:CreateToggle(opts)
@@ -274,9 +276,83 @@ function Nova.CreateWindow(opts)
 
             ToggleFrame.MouseButton1Click:Connect(function()
                 state = not state
+
+                opts.CurrentStatus = state
+
                 Tween(SwitchBG, {BackgroundColor3 = state and Theme.Accent or Theme.Outline}, 0.2)
                 Tween(Circle, {Position = state and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)}, 0.2)
                 if opts.Callback then pcall(opts.Callback, state) end
+            end)
+            return ToggleFrame, opts
+        end
+
+        function Tab:CreateDropdown(opts)
+            local open = false
+            local options = opts.Options or {}
+            
+            local DropFrame = Instance.new("Frame", Scroll)
+            DropFrame.Size = UDim2.new(1, -10, 0, 38)
+            DropFrame.BackgroundColor3 = Theme.ElementBg
+            DropFrame.ClipsDescendants = true
+            Instance.new("UICorner", DropFrame).CornerRadius = UDim.new(0, 6)
+            Instance.new("UIStroke", DropFrame).Color = Theme.Outline
+
+            local MainBtn = Instance.new("TextButton", DropFrame)
+            MainBtn.Size = UDim2.new(1, 0, 0, 38)
+            MainBtn.BackgroundTransparency = 1
+            MainBtn.Text = ""
+
+            local Lbl = Instance.new("TextLabel", MainBtn)
+            Lbl.Size = UDim2.new(0.6, 0, 1, 0)
+            Lbl.Position = UDim2.new(0, 10, 0, 0)
+            Lbl.BackgroundTransparency = 1
+            Lbl.Text = opts.Name
+            Lbl.TextColor3 = Theme.Text
+            Lbl.Font = Enum.Font.GothamMedium
+            Lbl.TextSize = 13
+            Lbl.TextXAlignment = Enum.TextXAlignment.Left
+
+            local SelectedLbl = Instance.new("TextLabel", MainBtn)
+            SelectedLbl.Size = UDim2.new(0.4, -30, 1, 0)
+            SelectedLbl.Position = UDim2.new(0.6, 0, 0, 0)
+            SelectedLbl.BackgroundTransparency = 1
+            SelectedLbl.Text = opts.CurrentOption or "None"
+            SelectedLbl.TextColor3 = Theme.SubText
+            SelectedLbl.Font = Enum.Font.Gotham
+            SelectedLbl.TextSize = 12
+            SelectedLbl.TextXAlignment = Enum.TextXAlignment.Right
+
+            local OptionContainer = Instance.new("Frame", DropFrame)
+            OptionContainer.Size = UDim2.new(1, 0, 1, -38)
+            OptionContainer.Position = UDim2.new(0, 0, 0, 38)
+            OptionContainer.BackgroundTransparency = 1
+            local OptLayout = Instance.new("UIListLayout", OptionContainer)
+            
+            for _, opt in pairs(options) do
+                local btn = Instance.new("TextButton", OptionContainer)
+                btn.Size = UDim2.new(1, 0, 0, 30)
+                btn.BackgroundColor3 = Theme.ElementBg
+                btn.Text = "  " .. opt
+                btn.TextColor3 = Theme.SubText
+                btn.Font = Enum.Font.Gotham
+                btn.TextSize = 12
+                btn.TextXAlignment = Enum.TextXAlignment.Left
+                btn.BorderSizePixel = 0
+
+                btn.MouseEnter:Connect(function() Tween(btn, {BackgroundColor3 = Theme.ElementHover}) end)
+                btn.MouseLeave:Connect(function() Tween(btn, {BackgroundColor3 = Theme.ElementBg}) end)
+                
+                btn.MouseButton1Click:Connect(function()
+                    SelectedLbl.Text = opt
+                    open = false
+                    Tween(DropFrame, {Size = UDim2.new(1, -10, 0, 38)})
+                    if opts.Callback then pcall(opts.Callback, opt) end
+                end)
+            end
+
+            MainBtn.MouseButton1Click:Connect(function()
+                open = not open
+                Tween(DropFrame, {Size = UDim2.new(1, -10, 0, open and (38 + (#options * 30)) or 38)})
             end)
         end
 
@@ -344,15 +420,99 @@ local Window = Nova.CreateWindow({
 })
 
 local InfoTab = Window:CreateTab("Game Info")
+local AutoFarmTab = Window:CreateTab("Auto Farm")
 local EspTab = Window:CreateTab("Visuals")
 local BeastTab = Window:CreateTab("Beast")
 local NBeastTab = Window:CreateTab("Survivor")
+local TeleportTab = Window:CreateTab("Teleport")
 local PlayerTab = Window:CreateTab("Player")
 
-local ESPEnabled = false 
+AutoFarmTab:CreateSection("Farm Settings")
 
+local PathfindingService = game:GetService("PathfindingService")
+
+local function WalkTo(targetPos)
+    local path = PathfindingService:CreatePath({AgentRadius = 3, AgentHeight = 5})
+    path:ComputeAsync(LocalPlayer.Character.HumanoidRootPart.Position, targetPos)
+    for _, waypoint in pairs(path:GetWaypoints()) do
+        if not getgenv().AutoFarm then break end
+        LocalPlayer.Character.Humanoid:MoveTo(waypoint.Position)
+        LocalPlayer.Character.Humanoid.MoveToFinished:Wait()
+    end
+end
+
+AutoFarmTab:CreateDropdown({
+    Name = "Farm Mode",
+    Options = {"Teleport", "Pathfind (Undetected)"},
+    CurrentOption = "Pathfind (Undetected)",
+    Callback = function(opt) getgenv().FarmMode = opt end
+})
+
+AutoFarmTab:CreateToggle({
+    Name = "Auto Farm Computers",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoFarm = state
+    end
+})
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if not getgenv().AutoFarm then continue end
+
+        local targetComp = nil
+        for _, v in pairs(Workspace:GetDescendants()) do
+            if v.Name == "ComputerTable" and v:FindFirstChild("Screen") then
+                if v.Screen.BrickColor == BrickColor.new("Bright blue") then
+                    targetComp = v
+                    break
+                end
+            end
+        end
+
+        if targetComp then
+            local triggerObj = targetComp:FindFirstChild("ComputerTrigger3") or targetComp:FindFirstChild("Trigger")
+            local eventObj = triggerObj and triggerObj:FindFirstChild("Event")
+            
+            if eventObj then
+                 local pos = triggerObj:GetPivot().Position 
+    
+                if getgenv().FarmMode == "Teleport" then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(0, 1, 0))
+                else
+                    WalkTo(pos)
+                end
+                
+                task.wait(0.5)
+                if targetComp.Screen.BrickColor == BrickColor.new("Bright blue") then
+                    Nova.Notify({Title = "Auto Farm", Text = "Hacking..."})
+                    
+                    RemoteEvent:FireServer("Input", "Trigger", true, eventObj)
+                    task.wait(0.1)
+                    RemoteEvent:FireServer("Input", "Action", true)
+                    
+                    local timeout = 0
+                    while targetComp.Screen.BrickColor == BrickColor.new("Bright blue") and timeout < 1500 do
+                        RemoteEvent:FireServer("SetPlayerMinigameResult", true)
+                        task.wait(0.1) 
+                        timeout = timeout + 0.8
+                    end
+                    
+                    RemoteEvent:FireServer("Input", "Action", false)
+                    RemoteEvent:FireServer("Input", "Trigger", false, eventObj)
+                    
+                    Nova.Notify({Title = "Auto Farm", Text = "Success!"})
+                    task.wait(11)
+                end
+            end
+        end
+    end
+end)
+
+local ESPEnabled = false 
 EspTab:CreateSection("ESP Options")
-EspTab:CreateToggle({
+local SmartPlayerESPToggle, SmartPlayerESP_Opts = EspTab:CreateToggle({
     Name = "Smart Player ESP",
     CurrentValue = false,
     Callback = function(state)
@@ -427,20 +587,7 @@ EspTab:CreateToggle({
     end
 })
 
-
-game:GetService("ReplicatedStorage"):WaitForChild("CurrentMap").Changed:Connect(function()
-    if ESPEnabled then
-        task.wait(10)
-        for _, v in pairs(Workspace:GetDescendants()) do 
-            if v.Name == "ComputerTable" and not v:FindFirstChildOfClass("Highlight") then
-                pcall(function() Instance.new("Highlight", v) end)
-            end
-        end
-        Nova.Notify({Title = "ESP", Text = "ESP refreshed for new map!", Duration = 2})
-    end
-end)
-
-EspTab:CreateToggle({
+local DoorESPToggle, DorrESP_Opts = EspTab:CreateToggle({
     Name = "Door ESP",
     CurrentValue = false,
     Callback = function(state)
@@ -486,7 +633,7 @@ EspTab:CreateToggle({
     end
 })
 
-EspTab:CreateToggle({
+local ComputerESPToggle, ComputerESP_Opts = EspTab:CreateToggle({
     Name = "Computer ESP",
     CurrentValue = false,
     Callback = function(state)
@@ -528,7 +675,7 @@ EspTab:CreateToggle({
     end
 })
 
-EspTab:CreateToggle({
+local FreezePodESPToggle, FreezePodESP_Opts = EspTab:CreateToggle({
     Name = "Freeze Pod ESP",
     CurrentValue = false,
     Callback = function(state)
@@ -545,7 +692,7 @@ EspTab:CreateToggle({
     end
 })
 
-EspTab:CreateToggle({
+local LockerESPToggle, LockerESP_Opts  = EspTab:CreateToggle({
     Name = "Locker ESP",
     CurrentValue = false,
     Callback = function(state)
@@ -746,10 +893,42 @@ NBeastTab:CreateToggle({
     end
 })
 
+TeleportTab:CreateButton({
+    Name = "Join during running game",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local Workspace = game:GetService("Workspace")
+
+        local FinalPad = nil
+        local localPlayer = Players.LocalPlayer
+        local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+
+        for _, obj in ipairs(Workspace:GetChildren()) do
+            if not obj:IsA("Model") then
+                continue
+            end
+
+            local hasComputerTable = obj:FindFirstChild("ComputerTable")
+            if not (hasComputerTable and hasComputerTable:IsA("Model")) then
+                continue
+            end
+
+            local pad = obj:FindFirstChild("OBSpawnPad")
+            if pad and pad:IsA("BasePart") then
+                FinalPad = pad
+            end
+        end
+
+        if FinalPad and character and character.PrimaryPart then
+            character:SetPrimaryPartCFrame(FinalPad.CFrame + Vector3.new(0, 5, 0))
+        end
+    end
+})
+
 local hackConnection
 
 NBeastTab:CreateToggle({
-    Name = "Anti PC Fail",
+    Name = "Anti PC Fail (High Stability)",
     CurrentValue = false,
     Callback = function(state)
         local TempStats = LocalPlayer:FindFirstChild("TempPlayerStatsModule")
@@ -758,7 +937,6 @@ NBeastTab:CreateToggle({
         local TimingGoal = TempStats:FindFirstChild("TimingGoalPosition")
         local ActionProgress = TempStats:FindFirstChild("ActionProgress")
         local OnTrigger = TempStats:FindFirstChild("OnTrigger")
-        local ActionInput = TempStats:FindFirstChild("ActionInput")
         local Remote = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent")
 
         if state then
@@ -766,28 +944,16 @@ NBeastTab:CreateToggle({
                 local v1 = TimingGoal.Value
                 if v1 > 0 then
                     task.spawn(function()
+                        task.wait(0.4) 
+                        
                         local progress = ActionProgress and ActionProgress.Value or 0
                         local speed = 360 / (-1 * progress + 2)
-                        local randomHitOffset = math.random(30, 60)
-                        local targetAngle = v1 + randomHitOffset
+                    
+                        local targetAngle = v1 + 45 
                         local waitTime = targetAngle / speed
                         
-                        local hasFired = false
-                        
-                        -- FALLBACK!
-                        task.delay(1.5, function()
-                            if not hasFired and OnTrigger and OnTrigger.Value == true then
-                                hasFired = true
-                                if ActionInput then ActionInput.Value = true end
-                                Remote:FireServer("SetPlayerMinigameResult", true)
-                            end
-                        end)
-
-                        task.wait(0.4 + waitTime)
-
-                        if not hasFired then
-                            hasFired = true
-                            if ActionInput then ActionInput.Value = true end
+                        task.wait(waitTime)
+                        if OnTrigger and OnTrigger.Value == true then
                             Remote:FireServer("SetPlayerMinigameResult", true)
                         end
                     end)
@@ -848,6 +1014,41 @@ PlayerTab:CreateButton({
 LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
+end)
+
+
+game:GetService("ReplicatedStorage"):WaitForChild("CurrentMap").Changed:Connect(function()
+    if ESPEnabled then
+        task.wait(10)
+        
+
+        if SmartPlayerESP_Opts.CurrentStatus == true then 
+            pcall(SmartPlayerESP_Opts.Callback, false)
+            pcall(SmartPlayerESP_Opts.Callback, true)
+        end
+
+        if DorrESP_Opts.CurrentStatus == true then 
+            pcall(DorrESP_Opts.Callback, false)
+            pcall(DorrESP_Opts.Callback, true)
+        end
+
+        if ComputerESP_Opts.CurrentStatus == true then 
+            pcall(ComputerESP_Opts.Callback, false)
+            pcall(ComputerESP_Opts.Callback, true)
+        end
+
+        if FreezePodESP_Opts.CurrentStatus == true then 
+            pcall(FreezePodESP_Opts.Callback, false)
+            pcall(FreezePodESP_Opts.Callback, true)
+        end
+
+        if LockerESP_Opts.CurrentStatus == true then 
+            pcall(LockerESP_Opts.Callback, false)
+            pcall(LockerESP_Opts.Callback, true)
+        end    
+
+        Nova.Notify({Title = "ESP", Text = "ESP refreshed for new map!", Duration = 2})
+    end
 end)
 
 Nova.Notify({Title = "Nova UI Loaded", Text = "Welcome to Flee the Facility!", Duration = 4})
