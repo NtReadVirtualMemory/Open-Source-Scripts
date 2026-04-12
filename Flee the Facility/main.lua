@@ -493,10 +493,10 @@ task.spawn(function()
                     RemoteEvent:FireServer("Input", "Action", true)
                     
                     local timeout = 0
-                    while targetComp.Screen.BrickColor == BrickColor.new("Bright blue") and timeout < 1500 do
+                    while targetComp:FindFirstChild("Screen") and targetComp.Screen.BrickColor == BrickColor.new("Bright blue") and timeout < 1500 do
                         RemoteEvent:FireServer("SetPlayerMinigameResult", true)
                         task.wait(0.1) 
-                        timeout = timeout + 0.8
+                        timeout = timeout + 0.1
                     end
                     
                     RemoteEvent:FireServer("Input", "Action", false)
@@ -928,7 +928,7 @@ TeleportTab:CreateButton({
 local hackConnection
 
 NBeastTab:CreateToggle({
-    Name = "Anti PC Fail (High Stability)",
+    Name = "Legit Auto Hack (Input Emulation)",
     CurrentValue = false,
     Callback = function(state)
         local TempStats = LocalPlayer:FindFirstChild("TempPlayerStatsModule")
@@ -937,6 +937,7 @@ NBeastTab:CreateToggle({
         local TimingGoal = TempStats:FindFirstChild("TimingGoalPosition")
         local ActionProgress = TempStats:FindFirstChild("ActionProgress")
         local OnTrigger = TempStats:FindFirstChild("OnTrigger")
+        local ActionInput = TempStats:FindFirstChild("ActionInput")
         local Remote = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent")
 
         if state then
@@ -944,17 +945,19 @@ NBeastTab:CreateToggle({
                 local v1 = TimingGoal.Value
                 if v1 > 0 then
                     task.spawn(function()
-                        task.wait(0.4) 
-                        
                         local progress = ActionProgress and ActionProgress.Value or 0
                         local speed = 360 / (-1 * progress + 2)
-                    
                         local targetAngle = v1 + 45 
                         local waitTime = targetAngle / speed
                         
-                        task.wait(waitTime)
+                        task.wait(0.4 + waitTime)
+                        
                         if OnTrigger and OnTrigger.Value == true then
-                            Remote:FireServer("SetPlayerMinigameResult", true)
+                            Remote:FireServer("Input", "Action", true)
+                            if ActionInput then ActionInput.Value = true end
+                            task.wait(0.2)
+                            Remote:FireServer("Input", "Action", false)
+                            if ActionInput then ActionInput.Value = false end
                         end
                     end)
                 end
