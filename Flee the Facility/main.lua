@@ -680,7 +680,8 @@ BeastTab:CreateToggle({
     end
 })
 
-BeastTab:CreateButton({
+-- also breaks powers, we should find an other way. maybe by hooking?
+--[[BeastTab:CreateButton({
     Name = "No Slow (Irreversible)",
     Callback = function()
         if LocalPlayer.TempPlayerStatsModule.IsBeast.Value == true then
@@ -688,7 +689,7 @@ BeastTab:CreateButton({
             Nova.Notify({Title = "Success", Text = "Removed Slow Effect."})
         end
     end
-})
+})]]
 
 BeastTab:CreateButton({
     Name = "Remove Sound And Glow (Irreversible)",
