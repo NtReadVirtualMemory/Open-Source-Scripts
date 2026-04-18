@@ -2,7 +2,7 @@ local Nova = {}
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local CoreGui = game:GetService("CoreGui")
+local CoreGui = gethui() or game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
@@ -10,6 +10,7 @@ local VirtualUser = game:GetService("VirtualUser")
 local CollectionService = game:GetService("CollectionService")
 
 local RemoteEvent = game:GetService("ReplicatedStorage").RemoteEvent
+
 
 local Theme = {
     Background = Color3.fromRGB(18, 18, 22),
@@ -510,111 +511,204 @@ task.spawn(function()
     end
 end)
 
-local ESPEnabled = false 
+local SmartESPParts = {"Head", "Torso", "Left Arm", "Right Arm", "Right Leg", "Left Leg"}
+local ESPEnabled = false
 EspTab:CreateSection("ESP Options")
-local SmartPlayerESPToggle, SmartPlayerESP_Opts = EspTab:CreateToggle({
-    Name = "Smart Player ESP",
-    CurrentValue = false,
-    Callback = function(state)
-        ESPEnabled = state
-        if state then
-            for _, v in pairs(Players:GetPlayers()) do
-                if v ~= LocalPlayer and v.Character then
-                    pcall(function()
-                        local transparency = 0.5
-                        local Folder = Instance.new("Folder", v.Character)
-                        Folder.Name = v.Name .. "'s ESP"
-                        
-                        local parts = {"Head", "Torso", "Left Arm", "Right Arm", "Right Leg", "Left Leg"}
-                        local adornments = {}
 
-                        for _, partName in ipairs(parts) do
-                            if v.Character:FindFirstChild(partName) then
-                                local box = Instance.new("BoxHandleAdornment", Folder)
-                                box.AlwaysOnTop = true
-                                box.Adornee = v.Character[partName]
-                                box.ZIndex = 1
-                                box.Name = partName
-                                box.Transparency = transparency
-                                box.Size = v.Character[partName].Size
-                                adornments[partName] = box
-                            end
-                        end
+local ESPGui = Instance.new("Folder")
+ESPGui.Name = "NovaESP"
+ESPGui.Parent = CoreGui
 
-                        getgenv().LoopBeastColor = RunService.Stepped:Connect(function()
-                            if not v.Character or not v:FindFirstChild("TempPlayerStatsModule") then return end
-                            
-                            local tempStats = v.TempPlayerStatsModule
-                            local hp = tempStats:FindFirstChild("Health")
-                            local escaped = tempStats:FindFirstChild("Escaped")
-                            local isBeast = tempStats:FindFirstChild("IsBeast")
-                            
-                            local isBeastValue = isBeast and isBeast.Value or false
-                            
-                            if not isBeastValue then
-                                if (hp and hp.Value <= 0) or (escaped and escaped.Value == true) then
-                                    for name, box in pairs(adornments) do box.Visible = false end
-                                    return
-                                else
-                                    for name, box in pairs(adornments) do box.Visible = true end
-                                end
-                            else
-                                for name, box in pairs(adornments) do box.Visible = true end
-                            end
+local function FindESPObject(name, className, adornee)
+    for _, obj in ipairs(ESPGui:GetChildren()) do
+        if obj.Name == name and obj:IsA(className) and obj.Adornee == adornee then
+            return obj
+        end
+    end
+end
 
-                            local color = isBeastValue and Color3.fromRGB(205, 98, 152) or Color3.new(225, 1, 1)
-                            local bodyColor = isBeastValue and Color3.fromRGB(205, 98, 152) or Color3.new(1, 1, 1)
+local function GetOrCreateHighlight(name, adornee)
+    local hl = FindESPObject(name, "Highlight", adornee)
+    if not hl then
+        hl = Instance.new("Highlight")
+        hl.Name = name
+        hl.Adornee = adornee
+        hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        hl.FillTransparency = 0.5
+        hl.OutlineTransparency = 0
+        hl.Parent = ESPGui
+    end
+    return hl
+end
 
-                            for name, box in pairs(adornments) do
-                                box.Color3 = (name == "Head") and color or bodyColor
-                            end
-                        end)
-                    end)
-                end
+local function RemoveESPByName(name)
+    for _, obj in ipairs(ESPGui:GetChildren()) do
+        if obj.Name == name then
+            obj:Destroy()
+        end
+    end
+end
+
+local function RemovePlayerESP()
+    for _, obj in ipairs(ESPGui:GetChildren()) do
+        if obj:IsA("Folder") and obj.Name:match("^PlayerESP_") then
+            obj:Destroy()
+        end
+    end
+end
+
+local SmartPlayerESPToggle, SmartPlayerESP_Opts
+local DoorESPToggle, DorrESP_Opts
+local ComputerESPToggle, ComputerESP_Opts
+local FreezePodESPToggle, FreezePodESP_Opts
+local LockerESPToggle, LockerESP_Opts
+
+local function RecalculateESPEnabled()
+    ESPEnabled =
+        (SmartPlayerESP_Opts and SmartPlayerESP_Opts.CurrentStatus == true) or
+        (DorrESP_Opts and DorrESP_Opts.CurrentStatus == true) or
+        (ComputerESP_Opts and ComputerESP_Opts.CurrentStatus == true) or
+        (FreezePodESP_Opts and FreezePodESP_Opts.CurrentStatus == true) or
+        (LockerESP_Opts and LockerESP_Opts.CurrentStatus == true)
+end
+
+local function GetPlayerESPFolder(player)
+    return ESPGui:FindFirstChild("PlayerESP_" .. player.UserId)
+end
+
+local function CreateOrUpdatePlayerESP(player)
+    if player == LocalPlayer or not player.Character then
+        return
+    end
+
+    local folder = GetPlayerESPFolder(player)
+    if not folder then
+        folder = Instance.new("Folder")
+        folder.Name = "PlayerESP_" .. player.UserId
+        folder.Parent = ESPGui
+    end
+
+    for _, partName in ipairs(SmartESPParts) do
+        local part = player.Character:FindFirstChild(partName)
+        local box = folder:FindFirstChild(partName)
+
+        if part then
+            if not box then
+                box = Instance.new("BoxHandleAdornment")
+                box.Name = partName
+                box.AlwaysOnTop = true
+                box.ZIndex = 1
+                box.Transparency = 0.5
+                box.Parent = folder
             end
-        else
-            if getgenv().LoopBeastColor then getgenv().LoopBeastColor:Disconnect() end
-            for _, v in pairs(Players:GetPlayers()) do
-                if v.Character then
-                    for _, e in pairs(v.Character:GetChildren()) do
-                        if e:IsA("Folder") and e.Name:match("'s ESP") then
-                            pcall(function() e:Destroy() end)
-                        end
+
+            box.Adornee = part
+            box.Size = part.Size
+        elseif box then
+            box:Destroy()
+        end
+    end
+
+    return folder
+end
+
+local function UpdateSmartPlayerESP()
+    for _, v in ipairs(Players:GetPlayers()) do
+        if v ~= LocalPlayer and v.Character then
+            local folder = CreateOrUpdatePlayerESP(v)
+            if folder then
+                local tempStats = v:FindFirstChild("TempPlayerStatsModule")
+                local hp = tempStats and tempStats:FindFirstChild("Health")
+                local escaped = tempStats and tempStats:FindFirstChild("Escaped")
+                local isBeast = tempStats and tempStats:FindFirstChild("IsBeast")
+
+                local isBeastValue = isBeast and isBeast.Value or false
+                local visible = true
+
+                if not isBeastValue then
+                    if (hp and hp.Value <= 0) or (escaped and escaped.Value == true) then
+                        visible = false
+                    end
+                end
+
+                local headColor = isBeastValue and Color3.fromRGB(205, 98, 152) or Color3.fromRGB(225, 1, 1)
+                local bodyColor = isBeastValue and Color3.fromRGB(205, 98, 152) or Color3.fromRGB(255, 255, 255)
+
+                for _, obj in ipairs(folder:GetChildren()) do
+                    if obj:IsA("BoxHandleAdornment") then
+                        obj.Visible = visible
+                        obj.Color3 = (obj.Name == "Head") and headColor or bodyColor
                     end
                 end
             end
         end
     end
+end
+
+SmartPlayerESPToggle, SmartPlayerESP_Opts = EspTab:CreateToggle({
+    Name = "Smart Player ESP",
+    CurrentValue = false,
+    Callback = function(state)
+        if getgenv().SmartESPConnection then
+            getgenv().SmartESPConnection:Disconnect()
+            getgenv().SmartESPConnection = nil
+        end
+
+        if getgenv().SmartESPPlayerAdded then
+            getgenv().SmartESPPlayerAdded:Disconnect()
+            getgenv().SmartESPPlayerAdded = nil
+        end
+
+        RemovePlayerESP()
+
+        if state then
+            for _, v in ipairs(Players:GetPlayers()) do
+                if v ~= LocalPlayer and v.Character then
+                    CreateOrUpdatePlayerESP(v)
+                end
+            end
+
+            UpdateSmartPlayerESP()
+
+            getgenv().SmartESPConnection = RunService.RenderStepped:Connect(function()
+                UpdateSmartPlayerESP()
+            end)
+
+            getgenv().SmartESPPlayerAdded = Players.PlayerAdded:Connect(function(plr)
+                plr.CharacterAdded:Connect(function()
+                    task.wait(1)
+                    if SmartPlayerESP_Opts and SmartPlayerESP_Opts.CurrentStatus == true then
+                        CreateOrUpdatePlayerESP(plr)
+                    end
+                end)
+            end)
+        end
+
+        RecalculateESPEnabled()
+    end
 })
 
-local DoorESPToggle, DorrESP_Opts = EspTab:CreateToggle({
+DoorESPToggle, DorrESP_Opts = EspTab:CreateToggle({
     Name = "Door ESP",
     CurrentValue = false,
     Callback = function(state)
-        getgenv().DoorESP = not state
+        getgenv().DoorESP = state
+
         if state then
             task.spawn(function()
-                for _, v in pairs(Workspace:GetDescendants()) do
-                    if v.Name == "SingleDoor" and v:FindFirstChild("Door") then
-                        pcall(function() Instance.new("Highlight", v.Door) end)
-                    elseif v.Name == "DoubleDoor" then
-                        pcall(function() Instance.new("Highlight", v) end)
-                    end
-                end
-
-                while not getgenv().DoorESP do
-                    for _, v in pairs(Workspace:GetDescendants()) do
+                while getgenv().DoorESP do
+                    for _, v in ipairs(Workspace:GetDescendants()) do
                         pcall(function()
-                            if v.Name == "SingleDoor" and v:FindFirstChild("DoorTrigger") then
-                                local hl = v.Door:FindFirstChildOfClass("Highlight")
-                                if hl then
-                                    hl.FillColor = (v.DoorTrigger.ActionSign.Value == 11) and Color3.new(0,1,0) or Color3.new(1,0,0)
-                                end
+                            if v.Name == "SingleDoor" and v:FindFirstChild("Door") and v:FindFirstChild("DoorTrigger") then
+                                local hl = GetOrCreateHighlight("DoorESP", v.Door)
+                                local isOpen = v.DoorTrigger.ActionSign.Value == 11
+                                hl.FillColor = isOpen and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                                hl.OutlineColor = hl.FillColor
                             elseif v.Name == "DoubleDoor" and v:FindFirstChild("DoorTrigger") then
-                                local hl = v:FindFirstChildOfClass("Highlight")
-                                if hl then
-                                    hl.FillColor = (v.DoorTrigger.ActionSign.Value == 11) and Color3.new(0,1,0) or Color3.new(1,0,0)
-                                end
+                                local hl = GetOrCreateHighlight("DoorESP", v)
+                                local isOpen = v.DoorTrigger.ActionSign.Value == 11
+                                hl.FillColor = isOpen and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                                hl.OutlineColor = hl.FillColor
                             end
                         end)
                     end
@@ -622,41 +716,35 @@ local DoorESPToggle, DorrESP_Opts = EspTab:CreateToggle({
                 end
             end)
         else
-            for _, v in pairs(Workspace:GetDescendants()) do
-                if (v.Name == "SingleDoor" and v:FindFirstChild("Door")) or v.Name == "DoubleDoor" then
-                    local target = v.Name == "SingleDoor" and v.Door or v
-                    local hl = target:FindFirstChildOfClass("Highlight")
-                    if hl then hl:Destroy() end
-                end
-            end
+            RemoveESPByName("DoorESP")
         end
+
+        RecalculateESPEnabled()
     end
 })
 
-local ComputerESPToggle, ComputerESP_Opts = EspTab:CreateToggle({
+ComputerESPToggle, ComputerESP_Opts = EspTab:CreateToggle({
     Name = "Computer ESP",
     CurrentValue = false,
     Callback = function(state)
-        getgenv().StopComputerESP = not state
-        if state then
-            for _, v in pairs(Workspace:GetDescendants()) do 
-                if v.Name == "ComputerTable" then
-                    pcall(function() Instance.new("Highlight", v) end)
-                end
-            end
+        getgenv().ComputerESP = state
 
+        if state then
             task.spawn(function()
-                while not getgenv().StopComputerESP do
-                    for _, v in pairs(Workspace:GetDescendants()) do
+                while getgenv().ComputerESP do
+                    for _, v in ipairs(Workspace:GetDescendants()) do
                         if v.Name == "ComputerTable" and v:FindFirstChild("Screen") then
                             pcall(function()
-                                local hl = v:FindFirstChildOfClass("Highlight")
-                                if hl then
-                                    if v.Screen.BrickColor == BrickColor.new("Bright blue") then
-                                        hl.FillColor = Color3.new(0,0,1)
-                                    elseif v.Screen.BrickColor == BrickColor.new("Dark green") then
-                                        hl.FillColor = Color3.new(0,1,0)
-                                    end
+                                local hl = GetOrCreateHighlight("ComputerESP", v)
+                                if v.Screen.BrickColor == BrickColor.new("Bright blue") then
+                                    hl.FillColor = Color3.fromRGB(0, 0, 255)
+                                    hl.OutlineColor = Color3.fromRGB(0, 0, 255)
+                                elseif v.Screen.BrickColor == BrickColor.new("Dark green") then
+                                    hl.FillColor = Color3.fromRGB(0, 255, 0)
+                                    hl.OutlineColor = Color3.fromRGB(0, 255, 0)
+                                else
+                                    hl.FillColor = Color3.fromRGB(255, 255, 255)
+                                    hl.OutlineColor = Color3.fromRGB(255, 255, 255)
                                 end
                             end)
                         end
@@ -665,57 +753,76 @@ local ComputerESPToggle, ComputerESP_Opts = EspTab:CreateToggle({
                 end
             end)
         else
-            for _, v in pairs(Workspace:GetDescendants()) do 
-                if v.Name == "ComputerTable" then
-                    local hl = v:FindFirstChildOfClass("Highlight")
-                    if hl then hl:Destroy() end
-                end
-            end
+            RemoveESPByName("ComputerESP")
         end
+
+        RecalculateESPEnabled()
     end
 })
 
-local FreezePodESPToggle, FreezePodESP_Opts = EspTab:CreateToggle({
+FreezePodESPToggle, FreezePodESP_Opts = EspTab:CreateToggle({
     Name = "Freeze Pod ESP",
     CurrentValue = false,
     Callback = function(state)
-        for _, v in pairs(Workspace:GetDescendants()) do 
-            if v.Name == "FreezePod" then
-                if state then
-                    pcall(function() Instance.new("Highlight", v) end)
-                else
-                    local hl = v:FindFirstChildOfClass("Highlight")
-                    if hl then hl:Destroy() end
+        if state then
+            for _, v in ipairs(Workspace:GetDescendants()) do
+                if v.Name == "FreezePod" then
+                    pcall(function()
+                        local hl = GetOrCreateHighlight("FreezePodESP", v)
+                        hl.FillColor = Color3.fromRGB(0, 170, 255)
+                        hl.OutlineColor = Color3.fromRGB(0, 170, 255)
+                    end)
                 end
             end
+        else
+            RemoveESPByName("FreezePodESP")
         end
+
+        RecalculateESPEnabled()
     end
 })
 
-local LockerESPToggle, LockerESP_Opts  = EspTab:CreateToggle({
+LockerESPToggle, LockerESP_Opts = EspTab:CreateToggle({
     Name = "Locker ESP",
     CurrentValue = false,
     Callback = function(state)
         if state then
-            local function showLockers()
-                for _, locker in pairs(CollectionService:GetTagged("LOCKER")) do
-                    if not locker:FindFirstChildOfClass("Highlight") then
-                        local hl = Instance.new("Highlight", locker)
-                        hl.FillColor = Color3.fromRGB(255, 165, 0)
-                        hl.FillTransparency = 0.5
-                    end
+            local function showLockers(locker)
+                if locker then
+                    local hl = GetOrCreateHighlight("LockerESP", locker)
+                    hl.FillColor = Color3.fromRGB(255, 165, 0)
+                    hl.OutlineColor = Color3.fromRGB(255, 165, 0)
+                    hl.FillTransparency = 0.5
+                    return
+                end
+
+                for _, l in ipairs(CollectionService:GetTagged("LOCKER")) do
+                    local hl = GetOrCreateHighlight("LockerESP", l)
+                    hl.FillColor = Color3.fromRGB(255, 165, 0)
+                    hl.OutlineColor = Color3.fromRGB(255, 165, 0)
+                    hl.FillTransparency = 0.5
                 end
             end
-            
+
             showLockers()
-            getgenv().LockerConnection = CollectionService:GetInstanceAddedSignal("LOCKER"):Connect(showLockers)
-        else
-            if getgenv().LockerConnection then getgenv().LockerConnection:Disconnect() end
-            for _, locker in pairs(CollectionService:GetTagged("LOCKER")) do
-                local hl = locker:FindFirstChildOfClass("Highlight")
-                if hl then hl:Destroy() end
+
+            if getgenv().LockerConnection then
+                getgenv().LockerConnection:Disconnect()
             end
+
+            getgenv().LockerConnection = CollectionService:GetInstanceAddedSignal("LOCKER"):Connect(function(locker)
+                showLockers(locker)
+            end)
+        else
+            if getgenv().LockerConnection then
+                getgenv().LockerConnection:Disconnect()
+                getgenv().LockerConnection = nil
+            end
+
+            RemoveESPByName("LockerESP")
         end
+
+        RecalculateESPEnabled()
     end
 })
 
