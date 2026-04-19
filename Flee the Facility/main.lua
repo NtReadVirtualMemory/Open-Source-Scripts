@@ -44,12 +44,13 @@ Nova.Cache = {
     Computers = {},
     Doors = {},
     FreezePods = {},
-    Lockers = {}
+    Lockers = {},
+    Exits = {}
 }
 
 task.spawn(function()
     while true do
-        local tempComps, tempDoors, tempPods, tempLockers = {}, {}, {}, {}
+        local tempComps, tempDoors, tempPods, tempLockers, tempExits = {}, {}, {}, {}, {}
         
         for _, v in ipairs(Workspace:GetDescendants()) do
             if v.Name == "ComputerTable" and v:FindFirstChild("Screen") then
@@ -58,6 +59,8 @@ task.spawn(function()
                 table.insert(tempDoors, v)
             elseif v.Name == "FreezePod" then
                 table.insert(tempPods, v)
+            elseif v.Name == "ExitDoor" then
+                table.insert(tempExits, v)
             end
         end
         
@@ -69,6 +72,7 @@ task.spawn(function()
         Nova.Cache.Doors = tempDoors
         Nova.Cache.FreezePods = tempPods
         Nova.Cache.Lockers = tempLockers
+        Nova.Cache.Exits = tempExits
 
         for _, obj in ipairs(ESPGui:GetChildren()) do
             if obj:IsA("Highlight") and (not obj.Adornee or not obj.Adornee.Parent) then
@@ -865,6 +869,33 @@ local FreezePodESP = EspTab:CreateToggle({
     end
 })
 
+local ExitESP = EspTab:CreateToggle({
+    Name = "Exit Door ESP",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().ExitESP = state
+        if state then
+            task.spawn(function()
+                while getgenv().ExitESP do
+                    for _, v in pairs(Nova.Cache.Exits) do
+                        if v and v.Parent then
+                            pcall(function()
+                                local target = v.PrimaryPart or v
+                                local hl = GetOrCreateHighlight("ExitESP", target)
+                                hl.FillColor = Color3.fromRGB(255, 255, 0)
+                                hl.OutlineColor = Color3.fromRGB(255, 255, 0)
+                            end)
+                        end
+                    end
+                    task.wait(1)
+                end
+            end)
+        else
+            RemoveESPByName("ExitESP")
+        end
+    end
+})
+
 local LockerESP = EspTab:CreateToggle({
     Name = "Locker ESP",
     CurrentValue = false,
@@ -1050,6 +1081,76 @@ local LegitHackToggle = NBeastTab:CreateToggle({
 
 
 TeleportTab:CreateSection("Teleports")
+
+local tpIndices = { Comp = 1, Exit = 1, Pod = 1 }
+
+TeleportTab:CreateButton({
+    Name = "Teleport to Computer",
+    Callback = function()
+        if #Nova.Cache.Computers == 0 then return end
+        if tpIndices.Comp > #Nova.Cache.Computers then tpIndices.Comp = 1 end
+        
+        local target = Nova.Cache.Computers[tpIndices.Comp]
+        if target and LocalPlayer.Character and LocalPlayer.Character.PrimaryPart then
+            LocalPlayer.Character:SetPrimaryPartCFrame(target:GetPivot() * CFrame.new(0, 0, -4))
+            Nova.Notify({Title = "Teleport", Text = "Teleported to Computer " .. tpIndices.Comp .. "/" .. #Nova.Cache.Computers, Duration = 2})
+            tpIndices.Comp = tpIndices.Comp + 1
+        end
+    end
+})
+
+TeleportTab:CreateButton({
+    Name = "Teleport to Exit",
+    Callback = function()
+        if #Nova.Cache.Exits == 0 then return end
+        if tpIndices.Exit > #Nova.Cache.Exits then tpIndices.Exit = 1 end
+        
+        local target = Nova.Cache.Exits[tpIndices.Exit]
+        if target and LocalPlayer.Character and LocalPlayer.Character.PrimaryPart then
+            LocalPlayer.Character:SetPrimaryPartCFrame(target:GetPivot() * CFrame.new(0, 0, -5))
+            Nova.Notify({Title = "Teleport", Text = "Teleported to Exit " .. tpIndices.Exit .. "/" .. #Nova.Cache.Exits, Duration = 2})
+            tpIndices.Exit = tpIndices.Exit + 1
+        end
+    end
+})
+
+TeleportTab:CreateButton({
+    Name = "Teleport to Freeze Pod",
+    Callback = function()
+        if #Nova.Cache.FreezePods == 0 then return end
+        if tpIndices.Pod > #Nova.Cache.FreezePods then tpIndices.Pod = 1 end
+        
+        local target = Nova.Cache.FreezePods[tpIndices.Pod]
+        if target and LocalPlayer.Character and LocalPlayer.Character.PrimaryPart then
+            LocalPlayer.Character:SetPrimaryPartCFrame(target:GetPivot() * CFrame.new(0, 0, -4))
+            Nova.Notify({Title = "Teleport", Text = "Teleported to Freeze Pod " .. tpIndices.Pod .. "/" .. #Nova.Cache.FreezePods, Duration = 2})
+            tpIndices.Pod = tpIndices.Pod + 1
+        end
+    end
+})
+
+TeleportTab:CreateSection("Lobby Teleports")
+
+TeleportTab:CreateButton({
+    Name = "Spawn",
+    Callback = function() LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(111, 8, -414)) end
+})
+
+TeleportTab:CreateButton({
+    Name = "Map Voting",
+    Callback = function() LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(157, 4, -344)) end
+})
+
+TeleportTab:CreateButton({
+    Name = "Cave",
+    Callback = function() LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(279, -11, -366)) end
+})
+
+TeleportTab:CreateButton({
+    Name = "Trading Servers (Lvl 6+)",
+    Callback = function() LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(65, 4, -308)) end
+})
+
 TeleportTab:CreateButton({
     Name = "Join during running game",
     Callback = function()
@@ -1120,7 +1221,8 @@ ConfigTab:CreateButton({
                 if data["Freeze Pod ESP"] ~= nil then FreezePodESP.Set(data["Freeze Pod ESP"]) end
                 if data["Locker ESP"] ~= nil then LockerESP.Set(data["Locker ESP"]) end
                 if data["Fullbright (Remove Fog)"] ~= nil then FullbrightToggle.Set(data["Fullbright (Remove Fog)"]) end
-                
+                if data["Exit Door ESP"] ~= nil then ExitESP.Set(data["Exit Door ESP"]) end
+
                 if data["Toggle Infinite Sprint (Q)"] ~= nil then BeastSprint.Set(data["Toggle Infinite Sprint (Q)"]) end
                 if data["Toggle Crawl"] ~= nil then BeastCrawl.Set(data["Toggle Crawl"]) end
                 if data["Toggle Sprint (Q)"] ~= nil then SurvSprint.Set(data["Toggle Sprint (Q)"]) end
