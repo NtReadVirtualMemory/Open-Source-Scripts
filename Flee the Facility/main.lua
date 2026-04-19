@@ -8,9 +8,77 @@ local RunService = game:GetService("RunService")
 local Lighting = game:GetService("Lighting")
 local VirtualUser = game:GetService("VirtualUser")
 local CollectionService = game:GetService("CollectionService")
+local PathfindingService = game:GetService("PathfindingService")
+local HttpService = game:GetService("HttpService")
 
-local RemoteEvent = game:GetService("ReplicatedStorage").RemoteEvent
+local RepStore = game:GetService("ReplicatedStorage")
+local RemoteEvent = RepStore:WaitForChild("RemoteEvent")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+local SmartESPParts = {"Head", "Torso", "Left Arm", "Right Arm", "Right Leg", "Left Leg"}
 
+Nova.Connections = {}
+function Nova.AddConnection(name, connection)
+    if Nova.Connections[name] then
+        Nova.Connections[name]:Disconnect()
+    end
+    Nova.Connections[name] = connection
+end
+
+function Nova.RemoveConnection(name)
+    if Nova.Connections[name] then
+        Nova.Connections[name]:Disconnect()
+        Nova.Connections[name] = nil
+    end
+end
+
+Nova.ConfigData = {}
+local ConfigFile = "Nova_FTF_Config.json"
+
+local ESPGui = Instance.new("Folder")
+ESPGui.Name = "NovaESP"
+local success = pcall(function() ESPGui.Parent = CoreGui end)
+if not success then ESPGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
+
+Nova.Cache = {
+    Computers = {},
+    Doors = {},
+    FreezePods = {},
+    Lockers = {}
+}
+
+task.spawn(function()
+    while true do
+        local tempComps, tempDoors, tempPods, tempLockers = {}, {}, {}, {}
+        
+        for _, v in ipairs(Workspace:GetDescendants()) do
+            if v.Name == "ComputerTable" and v:FindFirstChild("Screen") then
+                table.insert(tempComps, v)
+            elseif (v.Name == "SingleDoor" or v.Name == "DoubleDoor") and v:FindFirstChild("DoorTrigger") then
+                table.insert(tempDoors, v)
+            elseif v.Name == "FreezePod" then
+                table.insert(tempPods, v)
+            end
+        end
+        
+        for _, l in ipairs(CollectionService:GetTagged("LOCKER")) do
+            table.insert(tempLockers, l)
+        end
+        
+        Nova.Cache.Computers = tempComps
+        Nova.Cache.Doors = tempDoors
+        Nova.Cache.FreezePods = tempPods
+        Nova.Cache.Lockers = tempLockers
+
+        for _, obj in ipairs(ESPGui:GetChildren()) do
+            if obj:IsA("Highlight") and (not obj.Adornee or not obj.Adornee.Parent) then
+                obj:Destroy()
+            end
+        end
+
+        task.wait(2.5)
+    end
+end)
 
 local Theme = {
     Background = Color3.fromRGB(18, 18, 22),
@@ -32,7 +100,7 @@ end
 local NotifGui = Instance.new("ScreenGui")
 NotifGui.Name = "NovaNotifications"
 pcall(function() NotifGui.Parent = CoreGui end)
-if not NotifGui.Parent then NotifGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
+if not NotifGui.Parent then NotifGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
 
 local NotifContainer = Instance.new("Frame", NotifGui)
 NotifContainer.Size = UDim2.new(0, 300, 1, -20)
@@ -97,8 +165,7 @@ function Nova.CreateWindow(opts)
     
     local ScreenGui = Instance.new("ScreenGui")
     ScreenGui.Name = "NovaUI_FTF"
-    pcall(function() ScreenGui.Parent = CoreGui end)
-    if not ScreenGui.Parent then ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui") end
+    ScreenGui.Parent = CoreGui
 
     local MainFrame = Instance.new("Frame", ScreenGui)
     MainFrame.Size = UDim2.new(0, 550, 0, 420)
@@ -245,6 +312,8 @@ function Nova.CreateWindow(opts)
 
         function Tab:CreateToggle(opts)
             local state = opts.CurrentValue or false
+            Nova.ConfigData[opts.Name] = state
+            
             local ToggleFrame = Instance.new("TextButton", Scroll)
             ToggleFrame.Size = UDim2.new(1, -10, 0, 38)
             ToggleFrame.BackgroundColor3 = Theme.ElementBg
@@ -275,21 +344,25 @@ function Nova.CreateWindow(opts)
             Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             Instance.new("UICorner", Circle).CornerRadius = UDim.new(1, 0)
 
-            ToggleFrame.MouseButton1Click:Connect(function()
-                state = not state
-
+            local function SetState(newState)
+                state = newState
+                Nova.ConfigData[opts.Name] = state
                 opts.CurrentStatus = state
-
                 Tween(SwitchBG, {BackgroundColor3 = state and Theme.Accent or Theme.Outline}, 0.2)
                 Tween(Circle, {Position = state and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)}, 0.2)
                 if opts.Callback then pcall(opts.Callback, state) end
-            end)
-            return ToggleFrame, opts
+            end
+
+            ToggleFrame.MouseButton1Click:Connect(function() SetState(not state) end)
+            
+            opts.Set = SetState
+            return opts
         end
 
         function Tab:CreateDropdown(opts)
             local open = false
             local options = opts.Options or {}
+            Nova.ConfigData[opts.Name] = opts.CurrentOption or options[1] or "None"
             
             local DropFrame = Instance.new("Frame", Scroll)
             DropFrame.Size = UDim2.new(1, -10, 0, 38)
@@ -317,7 +390,7 @@ function Nova.CreateWindow(opts)
             SelectedLbl.Size = UDim2.new(0.4, -30, 1, 0)
             SelectedLbl.Position = UDim2.new(0.6, 0, 0, 0)
             SelectedLbl.BackgroundTransparency = 1
-            SelectedLbl.Text = opts.CurrentOption or "None"
+            SelectedLbl.Text = Nova.ConfigData[opts.Name]
             SelectedLbl.TextColor3 = Theme.SubText
             SelectedLbl.Font = Enum.Font.Gotham
             SelectedLbl.TextSize = 12
@@ -329,6 +402,14 @@ function Nova.CreateWindow(opts)
             OptionContainer.BackgroundTransparency = 1
             local OptLayout = Instance.new("UIListLayout", OptionContainer)
             
+            local function SelectOption(opt)
+                SelectedLbl.Text = opt
+                Nova.ConfigData[opts.Name] = opt
+                open = false
+                Tween(DropFrame, {Size = UDim2.new(1, -10, 0, 38)})
+                if opts.Callback then pcall(opts.Callback, opt) end
+            end
+
             for _, opt in pairs(options) do
                 local btn = Instance.new("TextButton", OptionContainer)
                 btn.Size = UDim2.new(1, 0, 0, 30)
@@ -342,19 +423,16 @@ function Nova.CreateWindow(opts)
 
                 btn.MouseEnter:Connect(function() Tween(btn, {BackgroundColor3 = Theme.ElementHover}) end)
                 btn.MouseLeave:Connect(function() Tween(btn, {BackgroundColor3 = Theme.ElementBg}) end)
-                
-                btn.MouseButton1Click:Connect(function()
-                    SelectedLbl.Text = opt
-                    open = false
-                    Tween(DropFrame, {Size = UDim2.new(1, -10, 0, 38)})
-                    if opts.Callback then pcall(opts.Callback, opt) end
-                end)
+                btn.MouseButton1Click:Connect(function() SelectOption(opt) end)
             end
 
             MainBtn.MouseButton1Click:Connect(function()
                 open = not open
                 Tween(DropFrame, {Size = UDim2.new(1, -10, 0, open and (38 + (#options * 30)) or 38)})
             end)
+            
+            opts.Set = SelectOption
+            return opts
         end
 
         function Tab:CreateKeybind(opts)
@@ -412,13 +490,7 @@ function Nova.CreateWindow(opts)
     return Window
 end
 
-
-local Workspace = game:GetService("Workspace")
-local LocalPlayer = Players.LocalPlayer
-
-local Window = Nova.CreateWindow({
-    Title = "Flee the Facility"
-})
+local Window = Nova.CreateWindow({ Title = "Flee the Facility" })
 
 local InfoTab = Window:CreateTab("Game Info")
 local AutoFarmTab = Window:CreateTab("Auto Farm")
@@ -427,11 +499,64 @@ local BeastTab = Window:CreateTab("Beast")
 local NBeastTab = Window:CreateTab("Survivor")
 local TeleportTab = Window:CreateTab("Teleport")
 local PlayerTab = Window:CreateTab("Player")
+local ConfigTab = Window:CreateTab("Settings")
+
+
+InfoTab:CreateSection("Live Game Stats")
+local MapLbl, _ = InfoTab:CreateButton({Name = "Map: Loading..."})
+local CompLbl, _ = InfoTab:CreateButton({Name = "Computers Left: ..."})
+local PowerLbl, _ = InfoTab:CreateButton({Name = "Beast Power: Unknown"})
+local TimeLbl, _ = InfoTab:CreateButton({Name = "Time Left: ..."})
+
+InfoTab:CreateSection("Round State")
+local ActiveLbl, _ = InfoTab:CreateButton({Name = "Game Active: No"})
+local PowerActLbl, _ = InfoTab:CreateButton({Name = "Power Active: No"})
+
+task.spawn(function()
+    local currentMap = RepStore:WaitForChild("CurrentMap")
+    local compsLeft = RepStore:WaitForChild("ComputersLeft")
+    local currentPower = RepStore:WaitForChild("CurrentPower")
+    local gameTimer = RepStore:WaitForChild("GameTimer")
+    local isGameActive = RepStore:WaitForChild("IsGameActive")
+    local powerActive = RepStore:WaitForChild("PowerActive")
+
+    local function updateMap()
+        local mapName = currentMap.Value and currentMap.Value.Name or "Lobby"
+        MapLbl.Text = "Map: " .. mapName
+    end
+    currentMap.Changed:Connect(updateMap)
+    updateMap()
+
+    compsLeft.Changed:Connect(function() CompLbl.Text = "Computers Left: " .. tostring(compsLeft.Value) end)
+    CompLbl.Text = "Computers Left: " .. tostring(compsLeft.Value)
+
+    currentPower.Changed:Connect(function()
+        PowerLbl.Text = "Beast Power: " .. currentPower.Value
+        Nova.Notify({Title = "Beast Power Alert", Text = "The Beast chose: " .. currentPower.Value, Duration = 4})
+    end)
+    PowerLbl.Text = "Beast Power: " .. currentPower.Value
+
+    gameTimer.Changed:Connect(function()
+        local minutes = math.floor(gameTimer.Value / 60)
+        local seconds = gameTimer.Value % 60
+        TimeLbl.Text = string.format("Time Left: %02d:%02d", minutes, seconds)
+    end)
+    
+    isGameActive.Changed:Connect(function() ActiveLbl.Text = "Game Active: " .. (isGameActive.Value and "Yes" or "No") end)
+    ActiveLbl.Text = "Game Active: " .. (isGameActive.Value and "Yes" or "No")
+
+    powerActive.Changed:Connect(function() 
+        PowerActLbl.Text = "Power Active: " .. (powerActive.Value and "Yes" or "No") 
+        if powerActive.Value then
+            Nova.Notify({Title = "Power Activated", Text = "The power (" .. currentPower.Value .. ") is now active!", Duration = 4})
+        end
+    end)
+    PowerActLbl.Text = "Power Active: " .. (powerActive.Value and "Yes" or "No")
+end)
+
 
 AutoFarmTab:CreateSection("Farm Settings")
-
-local PathfindingService = game:GetService("PathfindingService")
-
+-- Todo: make it check for doors and open them if needed instead of just pathfinding through them
 local function WalkTo(targetPos)
     local path = PathfindingService:CreatePath({AgentRadius = 3, AgentHeight = 5})
     path:ComputeAsync(LocalPlayer.Character.HumanoidRootPart.Position, targetPos)
@@ -442,14 +567,14 @@ local function WalkTo(targetPos)
     end
 end
 
-AutoFarmTab:CreateDropdown({
+local AutoFarmMode = AutoFarmTab:CreateDropdown({
     Name = "Farm Mode",
     Options = {"Teleport", "Pathfind (Undetected)"},
     CurrentOption = "Pathfind (Undetected)",
     Callback = function(opt) getgenv().FarmMode = opt end
 })
 
-AutoFarmTab:CreateToggle({
+local AutoFarmToggle = AutoFarmTab:CreateToggle({
     Name = "Auto Farm Computers",
     CurrentValue = false,
     Callback = function(state)
@@ -463,8 +588,8 @@ task.spawn(function()
         if not getgenv().AutoFarm then continue end
 
         local targetComp = nil
-        for _, v in pairs(Workspace:GetDescendants()) do
-            if v.Name == "ComputerTable" and v:FindFirstChild("Screen") then
+        for _, v in pairs(Nova.Cache.Computers) do
+            if v and v.Parent and v:FindFirstChild("Screen") then
                 if v.Screen.BrickColor == BrickColor.new("Bright blue") then
                     targetComp = v
                     break
@@ -511,14 +636,6 @@ task.spawn(function()
     end
 end)
 
-local SmartESPParts = {"Head", "Torso", "Left Arm", "Right Arm", "Right Leg", "Left Leg"}
-local ESPEnabled = false
-EspTab:CreateSection("ESP Options")
-
-local ESPGui = Instance.new("Folder")
-ESPGui.Name = "NovaESP"
-ESPGui.Parent = CoreGui
-
 local function FindESPObject(name, className, adornee)
     for _, obj in ipairs(ESPGui:GetChildren()) do
         if obj.Name == name and obj:IsA(className) and obj.Adornee == adornee then
@@ -557,29 +674,12 @@ local function RemovePlayerESP()
     end
 end
 
-local SmartPlayerESPToggle, SmartPlayerESP_Opts
-local DoorESPToggle, DorrESP_Opts
-local ComputerESPToggle, ComputerESP_Opts
-local FreezePodESPToggle, FreezePodESP_Opts
-local LockerESPToggle, LockerESP_Opts
-
-local function RecalculateESPEnabled()
-    ESPEnabled =
-        (SmartPlayerESP_Opts and SmartPlayerESP_Opts.CurrentStatus == true) or
-        (DorrESP_Opts and DorrESP_Opts.CurrentStatus == true) or
-        (ComputerESP_Opts and ComputerESP_Opts.CurrentStatus == true) or
-        (FreezePodESP_Opts and FreezePodESP_Opts.CurrentStatus == true) or
-        (LockerESP_Opts and LockerESP_Opts.CurrentStatus == true)
-end
-
 local function GetPlayerESPFolder(player)
     return ESPGui:FindFirstChild("PlayerESP_" .. player.UserId)
 end
 
 local function CreateOrUpdatePlayerESP(player)
-    if player == LocalPlayer or not player.Character then
-        return
-    end
+    if player == LocalPlayer or not player.Character then return end
 
     local folder = GetPlayerESPFolder(player)
     if not folder then
@@ -601,14 +701,12 @@ local function CreateOrUpdatePlayerESP(player)
                 box.Transparency = 0.5
                 box.Parent = folder
             end
-
             box.Adornee = part
             box.Size = part.Size
         elseif box then
             box:Destroy()
         end
     end
-
     return folder
 end
 
@@ -645,59 +743,45 @@ local function UpdateSmartPlayerESP()
     end
 end
 
-SmartPlayerESPToggle, SmartPlayerESP_Opts = EspTab:CreateToggle({
+EspTab:CreateSection("ESP Options")
+
+local SmartPlayerESP = EspTab:CreateToggle({
     Name = "Smart Player ESP",
     CurrentValue = false,
     Callback = function(state)
-        if getgenv().SmartESPConnection then
-            getgenv().SmartESPConnection:Disconnect()
-            getgenv().SmartESPConnection = nil
-        end
-
-        if getgenv().SmartESPPlayerAdded then
-            getgenv().SmartESPPlayerAdded:Disconnect()
-            getgenv().SmartESPPlayerAdded = nil
-        end
-
         RemovePlayerESP()
-
         if state then
             for _, v in ipairs(Players:GetPlayers()) do
                 if v ~= LocalPlayer and v.Character then
                     CreateOrUpdatePlayerESP(v)
                 end
             end
-
             UpdateSmartPlayerESP()
-
-            getgenv().SmartESPConnection = RunService.RenderStepped:Connect(function()
-                UpdateSmartPlayerESP()
-            end)
-
-            getgenv().SmartESPPlayerAdded = Players.PlayerAdded:Connect(function(plr)
+            Nova.AddConnection("SmartESP", RunService.RenderStepped:Connect(UpdateSmartPlayerESP))
+            Nova.AddConnection("SmartESP_PlayerAdded", Players.PlayerAdded:Connect(function(plr)
                 plr.CharacterAdded:Connect(function()
                     task.wait(1)
-                    if SmartPlayerESP_Opts and SmartPlayerESP_Opts.CurrentStatus == true then
+                    if SmartPlayerESP and SmartPlayerESP.CurrentStatus == true then
                         CreateOrUpdatePlayerESP(plr)
                     end
                 end)
-            end)
+            end))
+        else
+            Nova.RemoveConnection("SmartESP")
+            Nova.RemoveConnection("SmartESP_PlayerAdded")
         end
-
-        RecalculateESPEnabled()
     end
 })
 
-DoorESPToggle, DorrESP_Opts = EspTab:CreateToggle({
+local DoorESP = EspTab:CreateToggle({
     Name = "Door ESP",
     CurrentValue = false,
     Callback = function(state)
         getgenv().DoorESP = state
-
         if state then
             task.spawn(function()
                 while getgenv().DoorESP do
-                    for _, v in ipairs(Workspace:GetDescendants()) do
+                    for _, v in pairs(Nova.Cache.Doors) do
                         pcall(function()
                             if v.Name == "SingleDoor" and v:FindFirstChild("Door") and v:FindFirstChild("DoorTrigger") then
                                 local hl = GetOrCreateHighlight("DoorESP", v.Door)
@@ -718,22 +802,19 @@ DoorESPToggle, DorrESP_Opts = EspTab:CreateToggle({
         else
             RemoveESPByName("DoorESP")
         end
-
-        RecalculateESPEnabled()
     end
 })
 
-ComputerESPToggle, ComputerESP_Opts = EspTab:CreateToggle({
+local ComputerESP = EspTab:CreateToggle({
     Name = "Computer ESP",
     CurrentValue = false,
     Callback = function(state)
         getgenv().ComputerESP = state
-
         if state then
             task.spawn(function()
                 while getgenv().ComputerESP do
-                    for _, v in ipairs(Workspace:GetDescendants()) do
-                        if v.Name == "ComputerTable" and v:FindFirstChild("Screen") then
+                    for _, v in pairs(Nova.Cache.Computers) do
+                        if v and v.Parent and v:FindFirstChild("Screen") then
                             pcall(function()
                                 local hl = GetOrCreateHighlight("ComputerESP", v)
                                 if v.Screen.BrickColor == BrickColor.new("Bright blue") then
@@ -755,92 +836,69 @@ ComputerESPToggle, ComputerESP_Opts = EspTab:CreateToggle({
         else
             RemoveESPByName("ComputerESP")
         end
-
-        RecalculateESPEnabled()
     end
 })
 
-FreezePodESPToggle, FreezePodESP_Opts = EspTab:CreateToggle({
+local FreezePodESP = EspTab:CreateToggle({
     Name = "Freeze Pod ESP",
     CurrentValue = false,
     Callback = function(state)
+        getgenv().FreezePodESP = state
         if state then
-            for _, v in ipairs(Workspace:GetDescendants()) do
-                if v.Name == "FreezePod" then
-                    pcall(function()
-                        local hl = GetOrCreateHighlight("FreezePodESP", v)
-                        hl.FillColor = Color3.fromRGB(0, 170, 255)
-                        hl.OutlineColor = Color3.fromRGB(0, 170, 255)
-                    end)
+            task.spawn(function()
+                while getgenv().FreezePodESP do
+                    for _, v in pairs(Nova.Cache.FreezePods) do
+                        if v and v.Parent then
+                            pcall(function()
+                                local hl = GetOrCreateHighlight("FreezePodESP", v)
+                                hl.FillColor = Color3.fromRGB(0, 170, 255)
+                                hl.OutlineColor = Color3.fromRGB(0, 170, 255)
+                            end)
+                        end
+                    end
+                    task.wait(1)
                 end
-            end
+            end)
         else
             RemoveESPByName("FreezePodESP")
         end
-
-        RecalculateESPEnabled()
     end
 })
 
-LockerESPToggle, LockerESP_Opts = EspTab:CreateToggle({
+local LockerESP = EspTab:CreateToggle({
     Name = "Locker ESP",
     CurrentValue = false,
     Callback = function(state)
         if state then
-            local function showLockers(locker)
-                if locker then
-                    local hl = GetOrCreateHighlight("LockerESP", locker)
-                    hl.FillColor = Color3.fromRGB(255, 165, 0)
-                    hl.OutlineColor = Color3.fromRGB(255, 165, 0)
-                    hl.FillTransparency = 0.5
-                    return
+            Nova.AddConnection("LockerESP_Loop", RunService.RenderStepped:Connect(function()
+                for _, l in pairs(Nova.Cache.Lockers) do
+                    if l and l.Parent then
+                        local hl = GetOrCreateHighlight("LockerESP", l)
+                        hl.FillColor = Color3.fromRGB(255, 165, 0)
+                        hl.OutlineColor = Color3.fromRGB(255, 165, 0)
+                    end
                 end
-
-                for _, l in ipairs(CollectionService:GetTagged("LOCKER")) do
-                    local hl = GetOrCreateHighlight("LockerESP", l)
-                    hl.FillColor = Color3.fromRGB(255, 165, 0)
-                    hl.OutlineColor = Color3.fromRGB(255, 165, 0)
-                    hl.FillTransparency = 0.5
-                end
-            end
-
-            showLockers()
-
-            if getgenv().LockerConnection then
-                getgenv().LockerConnection:Disconnect()
-            end
-
-            getgenv().LockerConnection = CollectionService:GetInstanceAddedSignal("LOCKER"):Connect(function(locker)
-                showLockers(locker)
-            end)
+            end))
         else
-            if getgenv().LockerConnection then
-                getgenv().LockerConnection:Disconnect()
-                getgenv().LockerConnection = nil
-            end
-
+            Nova.RemoveConnection("LockerESP_Loop")
             RemoveESPByName("LockerESP")
         end
-
-        RecalculateESPEnabled()
     end
 })
 
-
-EspTab:CreateToggle({
+local FullbrightToggle = EspTab:CreateToggle({
     Name = "Fullbright (Remove Fog)",
     CurrentValue = false,
     Callback = function(state)
-        getgenv().FullBright = state
         if state then
-            getgenv().BrightLoop = RunService.RenderStepped:Connect(function()
+            Nova.AddConnection("Fullbright", RunService.RenderStepped:Connect(function()
                 Lighting.Atmosphere.Density = 0
                 Lighting.Brightness = 2
                 Lighting.ClockTime = 14
-            end)
+            end))
             Nova.Notify({Title = "Visuals", Text = "Fog removed. Map is bright.", Duration = 2})
         else
-            if getgenv().BrightLoop then getgenv().BrightLoop:Disconnect() end
+            Nova.RemoveConnection("Fullbright")
             Lighting.Atmosphere.Density = 0.3
             Lighting.Brightness = 1
         end
@@ -849,7 +907,7 @@ EspTab:CreateToggle({
 
 local sprintBegan, sprintEnded
 
-local function ToggleSprint(state, requireBeast)
+local function ToggleSprintAction(state, requireBeast)
     if requireBeast and LocalPlayer.TempPlayerStatsModule.IsBeast.Value == false then return end
 
     if state then
@@ -878,53 +936,14 @@ local function ToggleSprint(state, requireBeast)
     end
 end
 
-
-InfoTab:CreateSection("Live Game Stats")
-local MapLbl = InfoTab:CreateButton({Name = "Map: Loading..."})
-local CompLbl = InfoTab:CreateButton({Name = "Computers Left: ..."})
-local PowerLbl = InfoTab:CreateButton({Name = "Beast Power: Unknown"})
-local TimeLbl = InfoTab:CreateButton({Name = "Time Left: ..."})
-
-task.spawn(function()
-    local RepStore = game:GetService("ReplicatedStorage")
-
-    local currentMap = RepStore:WaitForChild("CurrentMap")
-    local function updateMap()
-        MapLbl.Text = "Map: " .. (currentMap.Value and currentMap.Value.Name or "Lobby")
-    end
-    currentMap.Changed:Connect(updateMap)
-    updateMap()
-
-    local compsLeft = RepStore:WaitForChild("ComputersLeft")
-    compsLeft.Changed:Connect(function()
-        CompLbl.Text = "Computers Left: " .. tostring(compsLeft.Value)
-    end)
-    CompLbl.Text = "Computers Left: " .. tostring(compsLeft.Value)
-
-    local currentPower = RepStore:WaitForChild("CurrentPower")
-    currentPower.Changed:Connect(function()
-        PowerLbl.Text = "Beast Power: " .. currentPower.Value
-        Nova.Notify({Title = "Beast Power Alert", Text = "The Beast is now using: " .. currentPower.Value, Duration = 4})
-    end)
-    PowerLbl.Text = "Beast Power: " .. currentPower.Value
-
-    local gameTimer = RepStore:WaitForChild("GameTimer")
-    gameTimer.Changed:Connect(function()
-        local minutes = math.floor(gameTimer.Value / 60)
-        local seconds = gameTimer.Value % 60
-        TimeLbl.Text = string.format("Time Left: %02d:%02d", minutes, seconds)
-    end)
-end)
-
-
 BeastTab:CreateSection("Beast Abilities")
-BeastTab:CreateToggle({
+local BeastSprint = BeastTab:CreateToggle({
     Name = "Toggle Infinite Sprint (Q)",
     CurrentValue = false,
-    Callback = function(state) ToggleSprint(state, true) end
+    Callback = function(state) ToggleSprintAction(state, true) end
 })
 
-BeastTab:CreateToggle({
+local BeastCrawl = BeastTab:CreateToggle({
     Name = "Toggle Crawl",
     CurrentValue = false,
     Callback = function(state)
@@ -933,17 +952,6 @@ BeastTab:CreateToggle({
         end
     end
 })
-
--- also breaks powers, we should find an other way. maybe by hooking?
---[[BeastTab:CreateButton({
-    Name = "No Slow (Irreversible)",
-    Callback = function()
-        if LocalPlayer.TempPlayerStatsModule.IsBeast.Value == true then
-            pcall(function() LocalPlayer.Character.PowersLocalScript:Destroy() end)
-            Nova.Notify({Title = "Success", Text = "Removed Slow Effect."})
-        end
-    end
-})]]
 
 BeastTab:CreateButton({
     Name = "Remove Sound And Glow (Irreversible)",
@@ -977,64 +985,30 @@ BeastTab:CreateButton({
 
 
 NBeastTab:CreateSection("Survivor Perks")
-NBeastTab:CreateToggle({
+local SurvSprint = NBeastTab:CreateToggle({
     Name = "Toggle Sprint (Q)",
     CurrentValue = false,
-    Callback = function(state) ToggleSprint(state, false) end
+    Callback = function(state) ToggleSprintAction(state, false) end
 })
 
-NBeastTab:CreateToggle({
+local InfJumpToggle = NBeastTab:CreateToggle({
     Name = "Infinite Double Jump",
     CurrentValue = false,
     Callback = function(state)
         getgenv().InfJump = state
         if state then
-            getgenv().JumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function()
-                if getgenv().InfJump then
+            Nova.AddConnection("JumpRequest", game:GetService("UserInputService").JumpRequest:Connect(function()
+                if getgenv().InfJump and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
                     LocalPlayer.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 36, 0)
                 end
-            end)
+            end))
         else
-            if getgenv().JumpConnection then getgenv().JumpConnection:Disconnect() end
+            Nova.RemoveConnection("JumpRequest")
         end
     end
 })
 
-TeleportTab:CreateButton({
-    Name = "Join during running game",
-    Callback = function()
-        local Players = game:GetService("Players")
-        local Workspace = game:GetService("Workspace")
-
-        local FinalPad = nil
-        local localPlayer = Players.LocalPlayer
-        local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-
-        for _, obj in ipairs(Workspace:GetChildren()) do
-            if not obj:IsA("Model") then
-                continue
-            end
-
-            local hasComputerTable = obj:FindFirstChild("ComputerTable")
-            if not (hasComputerTable and hasComputerTable:IsA("Model")) then
-                continue
-            end
-
-            local pad = obj:FindFirstChild("OBSpawnPad")
-            if pad and pad:IsA("BasePart") then
-                FinalPad = pad
-            end
-        end
-
-        if FinalPad and character and character.PrimaryPart then
-            character:SetPrimaryPartCFrame(FinalPad.CFrame + Vector3.new(0, 5, 0))
-        end
-    end
-})
-
-local hackConnection
-
-NBeastTab:CreateToggle({
+local LegitHackToggle = NBeastTab:CreateToggle({
     Name = "Legit Auto Hack (Input Emulation)",
     CurrentValue = false,
     Callback = function(state)
@@ -1045,10 +1019,9 @@ NBeastTab:CreateToggle({
         local ActionProgress = TempStats:FindFirstChild("ActionProgress")
         local OnTrigger = TempStats:FindFirstChild("OnTrigger")
         local ActionInput = TempStats:FindFirstChild("ActionInput")
-        local Remote = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent")
 
         if state then
-            hackConnection = TimingGoal.Changed:Connect(function()
+            Nova.AddConnection("LegitHack", TimingGoal.Changed:Connect(function()
                 local v1 = TimingGoal.Value
                 if v1 > 0 then
                     task.spawn(function()
@@ -1060,47 +1033,47 @@ NBeastTab:CreateToggle({
                         task.wait(0.4 + waitTime)
                         
                         if OnTrigger and OnTrigger.Value == true then
-                            Remote:FireServer("Input", "Action", true)
+                            RemoteEvent:FireServer("Input", "Action", true)
                             if ActionInput then ActionInput.Value = true end
                             task.wait(0.2)
-                            Remote:FireServer("Input", "Action", false)
+                            RemoteEvent:FireServer("Input", "Action", false)
                             if ActionInput then ActionInput.Value = false end
                         end
                     end)
                 end
-            end)
+            end))
         else
-            if hackConnection then
-                hackConnection:Disconnect()
-                hackConnection = nil
-            end
+            Nova.RemoveConnection("LegitHack")
         end
     end
 })
 
---[[
-NBeastTab:CreateToggle({
-    Name = "Auto-Free Survivors",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().AutoFree = state
-        task.spawn(function()
-            while getgenv().AutoFree do
-                for _, v in pairs(Workspace:GetDescendants()) do
-                    if v.Name == "ActionSign" and v.Value == 31 then -- 31 = "Free"
-                        local trigger = v.Parent:FindFirstChild("Event")
-                        if trigger then
-                            RemoteEvent:FireServer("Input", "Trigger", true, trigger)
-                            task.wait(0.2)
-                            RemoteEvent:FireServer("Input", "Trigger", false, trigger)
-                        end
-                    end
-                end
-                task.wait(1)
+
+TeleportTab:CreateSection("Teleports")
+TeleportTab:CreateButton({
+    Name = "Join during running game",
+    Callback = function()
+        local FinalPad = nil
+        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+        for _, obj in ipairs(Workspace:GetChildren()) do
+            if not obj:IsA("Model") then continue end
+
+            local hasComputerTable = obj:FindFirstChild("ComputerTable")
+            if not (hasComputerTable and hasComputerTable:IsA("Model")) then continue end
+
+            local pad = obj:FindFirstChild("OBSpawnPad")
+            if pad and pad:IsA("BasePart") then
+                FinalPad = pad
             end
-        end)
+        end
+
+        if FinalPad and character and character.PrimaryPart then
+            character:SetPrimaryPartCFrame(FinalPad.CFrame + Vector3.new(0, 5, 0))
+            Nova.Notify({Title = "Teleported", Text = "You joined the map!"})
+        end
     end
-})]]
+})
 
 
 PlayerTab:CreateSection("Local Player")
@@ -1120,45 +1093,69 @@ PlayerTab:CreateButton({
     end
 })
 
--- Anti AFK Kick
+
+
+ConfigTab:CreateSection("Config Manager")
+ConfigTab:CreateButton({
+    Name = "Save Settings",
+    Callback = function()
+        pcall(function()
+            local json = HttpService:JSONEncode(Nova.ConfigData)
+            writefile(ConfigFile, json)
+            Nova.Notify({Title = "Config", Text = "Settings saved successfully!", Duration = 3})
+        end)
+    end
+})
+
+ConfigTab:CreateButton({
+    Name = "Load Settings",
+    Callback = function()
+        pcall(function()
+            if isfile(ConfigFile) then
+                local data = HttpService:JSONDecode(readfile(ConfigFile))
+                if data["Auto Farm Computers"] ~= nil then AutoFarmToggle.Set(data["Auto Farm Computers"]) end
+                if data["Smart Player ESP"] ~= nil then SmartPlayerESP.Set(data["Smart Player ESP"]) end
+                if data["Door ESP"] ~= nil then DoorESP.Set(data["Door ESP"]) end
+                if data["Computer ESP"] ~= nil then ComputerESP.Set(data["Computer ESP"]) end
+                if data["Freeze Pod ESP"] ~= nil then FreezePodESP.Set(data["Freeze Pod ESP"]) end
+                if data["Locker ESP"] ~= nil then LockerESP.Set(data["Locker ESP"]) end
+                if data["Fullbright (Remove Fog)"] ~= nil then FullbrightToggle.Set(data["Fullbright (Remove Fog)"]) end
+                
+                if data["Toggle Infinite Sprint (Q)"] ~= nil then BeastSprint.Set(data["Toggle Infinite Sprint (Q)"]) end
+                if data["Toggle Crawl"] ~= nil then BeastCrawl.Set(data["Toggle Crawl"]) end
+                if data["Toggle Sprint (Q)"] ~= nil then SurvSprint.Set(data["Toggle Sprint (Q)"]) end
+                if data["Infinite Double Jump"] ~= nil then InfJumpToggle.Set(data["Infinite Double Jump"]) end
+                if data["Legit Auto Hack (Input Emulation)"] ~= nil then LegitHackToggle.Set(data["Legit Auto Hack (Input Emulation)"]) end
+
+                if data["Farm Mode"] ~= nil then AutoFarmMode.Set(data["Farm Mode"]) end
+                
+                Nova.Notify({Title = "Config", Text = "Settings loaded!", Duration = 3})
+            end
+        end)
+    end
+})
+
+
+LocalPlayer.CharacterAdded:Connect(function(char)
+    char:WaitForChild("Humanoid")
+    task.wait(1) 
+    
+    if BeastSprint.CurrentStatus then BeastSprint.Set(true) end
+    if SurvSprint.CurrentStatus then SurvSprint.Set(true) end
+    if InfJumpToggle.CurrentStatus then InfJumpToggle.Set(true) end
+    if BeastCrawl.CurrentStatus then BeastCrawl.Set(true) end
+    if LegitHackToggle.CurrentStatus then LegitHackToggle.Set(true) end
+    
+    if SmartPlayerESP.CurrentStatus then
+        SmartPlayerESP.Set(false)
+        SmartPlayerESP.Set(true)
+    end
+end)
+
+-- Anti AFK
 LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
 end)
 
-
-game:GetService("ReplicatedStorage"):WaitForChild("CurrentMap").Changed:Connect(function()
-    if ESPEnabled then
-        task.wait(10)
-        
-
-        if SmartPlayerESP_Opts.CurrentStatus == true then 
-            pcall(SmartPlayerESP_Opts.Callback, false)
-            pcall(SmartPlayerESP_Opts.Callback, true)
-        end
-
-        if DorrESP_Opts.CurrentStatus == true then 
-            pcall(DorrESP_Opts.Callback, false)
-            pcall(DorrESP_Opts.Callback, true)
-        end
-
-        if ComputerESP_Opts.CurrentStatus == true then 
-            pcall(ComputerESP_Opts.Callback, false)
-            pcall(ComputerESP_Opts.Callback, true)
-        end
-
-        if FreezePodESP_Opts.CurrentStatus == true then 
-            pcall(FreezePodESP_Opts.Callback, false)
-            pcall(FreezePodESP_Opts.Callback, true)
-        end
-
-        if LockerESP_Opts.CurrentStatus == true then 
-            pcall(LockerESP_Opts.Callback, false)
-            pcall(LockerESP_Opts.Callback, true)
-        end    
-
-        Nova.Notify({Title = "ESP", Text = "ESP refreshed for new map!", Duration = 2})
-    end
-end)
-
-Nova.Notify({Title = "Nova UI Loaded", Text = "Welcome to Flee the Facility!", Duration = 4})
+Nova.Notify({Title = "Nova UI Loaded", Text = "Welcome to Flee the Facility (v2.0)!", Duration = 4})
