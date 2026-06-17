@@ -16,6 +16,17 @@ local RemoteEvent = RepStore:WaitForChild("RemoteEvent")
 local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 local SmartESPParts = {"Head", "Torso", "Left Arm", "Right Arm", "Right Leg", "Left Leg"}
+local SavedPlayerStatsModule = require(game.Players.LocalPlayer:WaitForChild("SavedPlayerStatsModule", 120))
+local TempPlayerStatsModule = require(game.Players.LocalPlayer:WaitForChild("TempPlayerStatsModule"))
+
+-- print(r.GetValue("Credits"))
+-- RemoteEvent:FireServer("SelectedBeastPower", "Seer")
+-- RemoteEvent:FireServer("Flop", Vector3.new(10,10,10))
+
+-- TempPlayerStatsModule.GetValue("IsCrawling")
+-- TempPlayerStatsModule.GetValue("Captured")
+-- TempPlayerStatsModule.Get("IsBeast")
+-- TempPlayerStatsModule.Get("Ragdoll")
 
 Nova.Connections = {}
 function Nova.AddConnection(name, connection)
@@ -1079,6 +1090,24 @@ local LegitHackToggle = NBeastTab:CreateToggle({
     end
 })
 
+NBeastTab:CreateToggle({
+    Name = "Auto-Flop when Hit",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoFlop = state
+    end
+})
+
+task.spawn(function()
+    while true do
+        if getgenv().AutoFlop then
+            if TempPlayerStatsModule.GetValue("Ragdoll") == true then
+                RemoteEvent:FireServer("Flop", Vector3.new(math.random(-50,50), 50, math.random(-50,50)))
+            end
+        end
+        task.wait(0.1)
+    end
+end)
 
 TeleportTab:CreateSection("Teleports")
 
