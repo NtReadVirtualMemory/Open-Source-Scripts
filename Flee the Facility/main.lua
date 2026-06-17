@@ -1102,7 +1102,7 @@ task.spawn(function()
     while true do
         if getgenv().AutoFlop then
             if TempPlayerStatsModule.GetValue("Ragdoll") == true then
-                RemoteEvent:FireServer("Flop", Vector3.new(math.random(-50,50), 50, math.random(-50,50)))
+                RemoteEvent:FireServer("Flop", Vector3.new(math.random(-500,500), math.random(50,500), math.random(-500,500)))
             end
         end
         task.wait(0.1)
